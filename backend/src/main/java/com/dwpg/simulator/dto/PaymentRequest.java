@@ -37,6 +37,9 @@ public class PaymentRequest {
     public String getOrderReference() { return orderReference; }
     public void setOrderReference(String orderReference) { this.orderReference = orderReference; }
 
+    public String getDescription() { return orderReference; }
+    public void setDescription(String description) { this.orderReference = description; }
+
     public String getCurrency() { return currency; }
     public void setCurrency(String currency) { this.currency = currency; }
 

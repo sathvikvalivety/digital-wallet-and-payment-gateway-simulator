@@ -1,0 +1,21 @@
+NAME                                 READY   STATUS              RESTARTS   AGE
+pod/dwpg-backend-6c9c444b66-9l7ll    0/1     ContainerCreating   0          8s
+pod/dwpg-backend-6c9c444b66-nsm5s    0/1     ContainerCreating   0          8s
+pod/dwpg-frontend-64796679f6-2nf9d   0/1     ContainerCreating   0          8s
+pod/dwpg-frontend-64796679f6-z892k   0/1     ContainerCreating   0          8s
+pod/dwpg-mariadb-764985446-q6kqp     0/1     ContainerCreating   0          8s
+
+NAME                            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+service/dwpg-backend-service    ClusterIP   10.110.48.46     <none>        8080/TCP         8s
+service/dwpg-frontend-service   NodePort    10.111.214.148   <none>        3000:30080/TCP   8s
+service/dwpg-mariadb-service    ClusterIP   10.96.193.236    <none>        3306/TCP         8s
+
+NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/dwpg-backend    0/2     2            0           8s
+deployment.apps/dwpg-frontend   0/2     2            0           8s
+deployment.apps/dwpg-mariadb    0/1     1            0           8s
+
+NAME                                       DESIRED   CURRENT   READY   AGE
+replicaset.apps/dwpg-backend-6c9c444b66    2         2         0       8s
+replicaset.apps/dwpg-frontend-64796679f6   2         2         0       8s
+replicaset.apps/dwpg-mariadb-764985446     1         1         0       8s

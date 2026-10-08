@@ -9,6 +9,7 @@ import java.util.Optional;
 @Repository
 public interface MerchantRepository extends JpaRepository<Merchant, Long> {
     Optional<Merchant> findByUserId(Long userId);
+    Optional<Merchant> findByWalletId(Long walletId);
     Optional<Merchant> findByApiKeyHash(String apiKeyHash);
     boolean existsByUserId(Long userId);
 }

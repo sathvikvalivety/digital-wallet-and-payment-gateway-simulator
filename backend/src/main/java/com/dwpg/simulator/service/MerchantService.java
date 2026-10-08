@@ -49,9 +49,9 @@ public class MerchantService {
             userRepository.save(user);
         }
 
-        // Provision merchant settlement wallet
-        Wallet settlementWallet = new Wallet(user, BigDecimal.ZERO, "USD");
-        settlementWallet = walletRepository.save(settlementWallet);
+        // Provision or associate merchant settlement wallet
+        Wallet settlementWallet = walletRepository.findByUserId(user.getId())
+                .orElseGet(() -> walletRepository.save(new Wallet(user, BigDecimal.ZERO, "USD")));
 
         // Generate high-entropy API key
         String plainApiKey = "mkey_" + UUID.randomUUID().toString().replace("-", "");

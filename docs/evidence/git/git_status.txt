@@ -1,0 +1,37 @@
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   backend/src/main/java/com/dwpg/simulator/controller/MerchantController.java
+	modified:   backend/src/main/java/com/dwpg/simulator/controller/PaymentController.java
+	modified:   backend/src/main/java/com/dwpg/simulator/controller/TransactionController.java
+	modified:   backend/src/main/java/com/dwpg/simulator/controller/WalletController.java
+	modified:   backend/src/main/java/com/dwpg/simulator/dto/MerchantResponse.java
+	modified:   backend/src/main/java/com/dwpg/simulator/dto/PaymentRequest.java
+	modified:   backend/src/main/java/com/dwpg/simulator/dto/PaymentResponse.java
+	modified:   backend/src/main/java/com/dwpg/simulator/dto/RefundRequest.java
+	modified:   backend/src/main/java/com/dwpg/simulator/dto/WalletResponse.java
+	modified:   backend/src/main/java/com/dwpg/simulator/repository/MerchantRepository.java
+	modified:   backend/src/main/java/com/dwpg/simulator/service/MerchantService.java
+	modified:   backend/src/main/java/com/dwpg/simulator/service/RefundService.java
+	modified:   backend/src/main/java/com/dwpg/simulator/service/WalletService.java
+	modified:   frontend/package-lock.json
+	modified:   frontend/package.json
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	SECURITY-TEST-REPORT.md
+	TEST-RESULTS.md
+	backend/src/main/java/com/dwpg/simulator/controller/RefundController.java
+	docs/02-requirements/.~lock.srs.docx#
+	docs/diagrams/
+	docs/evidence/
+	scripts/capture_sonarqube_screenshots.js
+	scripts/capture_ui_screenshots.js
+	scripts/execute_live_system_tests.py
+	scripts/generate_all_21_diagrams.py
+	test-firefox.png
+
+no changes added to commit (use "git add" and/or "git commit -a")

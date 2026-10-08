@@ -16,7 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/payments")
+@RequestMapping({"/api/payments", "/api/payment"})
 public class PaymentController {
 
     private final PaymentService paymentService;
@@ -27,7 +27,7 @@ public class PaymentController {
         this.refundService = refundService;
     }
 
-    @PostMapping
+    @PostMapping({"", "/initiate"})
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PaymentResponse> initiatePayment(
             @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,

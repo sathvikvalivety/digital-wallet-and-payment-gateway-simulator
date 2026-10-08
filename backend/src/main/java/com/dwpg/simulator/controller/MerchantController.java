@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/merchants")
+@RequestMapping({"/api/merchants", "/api/merchant"})
 public class MerchantController {
 
     private final MerchantService merchantService;
@@ -20,7 +20,7 @@ public class MerchantController {
         this.merchantService = merchantService;
     }
 
-    @PostMapping
+    @PostMapping({"", "/register"})
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<MerchantResponse> registerMerchant(@Valid @RequestBody MerchantRequest request) {
         String username = SecurityUtils.getCurrentUsername();
@@ -28,7 +28,7 @@ public class MerchantController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/me")
+    @GetMapping({"", "/me"})
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<MerchantResponse> getMyMerchantProfile() {
         String username = SecurityUtils.getCurrentUsername();

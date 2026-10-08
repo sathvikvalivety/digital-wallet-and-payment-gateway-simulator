@@ -95,6 +95,30 @@ public class WalletService {
         return toResponse(wallet);
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public WalletResponse fundMyWallet(FundRequest request, String username, String clientIp) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
+        Wallet wallet = walletRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Wallet not found for user: " + username));
+        return fundWallet(wallet.getId(), request, username, clientIp);
+    }
+
+    @Transactional
+    public WalletResponse createWallet(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
+        return walletRepository.findByUserId(user.getId())
+                .map(this::toResponse)
+                .orElseGet(() -> {
+                    Wallet newWallet = new Wallet(user, BigDecimal.ZERO, "USD");
+                    newWallet = walletRepository.save(newWallet);
+                    auditService.logEvent(AuditEventType.WALLET_CREATED, newWallet.getId(), username, "SUCCESS",
+                            "Simulated wallet initialized for user.");
+                    return toResponse(newWallet);
+                });
+    }
+
     public WalletResponse toResponse(Wallet wallet) {
         return new WalletResponse(
                 wallet.getId(),

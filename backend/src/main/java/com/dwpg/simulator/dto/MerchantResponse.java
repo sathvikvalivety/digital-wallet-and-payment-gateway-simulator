@@ -24,6 +24,7 @@ public class MerchantResponse {
     }
 
     public Long getMerchantId() { return merchantId; }
+    public Long getId() { return merchantId; }
     public Long getUserId() { return userId; }
     public String getBusinessName() { return businessName; }
     public Long getWalletId() { return walletId; }

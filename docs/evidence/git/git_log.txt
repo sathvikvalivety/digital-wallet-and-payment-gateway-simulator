@@ -1,0 +1,20 @@
+e951af1 docs: mirror Phase 13 and 14 documentation to alternate folder names
+6c45d6d feat(phase16): add master final examination report, traceability matrix, and 25-point audit certification
+7537e3f feat(phase15): add system hardening checklists, secure deployment criteria, and SIEM logging plan
+41e432e feat(phase14): add GitHub Actions DevSecOps workflow and CI/CD security report
+b1c449f feat(phase13): add hardened containerization with Docker, Kubernetes manifests, and security report
+a145cb5 docs(phase12): add secure coding refactoring evidence and defect remediation report
+8bf88e7 docs(phase11): add SonarQube SAST audit report, metrics, and quality gate evidence
+7dfbfac fix(security): remediate SonarQube blocker S6437 hardcoded seed and clean code smells
+453038d feat(frontend): implement secure React Vite frontend with idempotency and replay demo
+c123b20 feat: implement backend core services, security controls, and automated tests
+6c3a456 docs: add sprint reviews, burndown analysis, velocity, defect tracking, and daily scrum (phase 10)
+75a0364 docs: add product backlog and Jira user stories (phase 9)
+1874170 docs: add attack tree models, analysis, and security-refined architecture (phase 8)
+a82b104 docs: add STRIDE threat model, asset CIA analysis, vulnerabilities, and information flow (phase 7)
+38e5e35 docs: add UI wireframes, visual screens, and design rationale (phase 6)
+75543ab docs: add software architecture, component diagrams, and design engineering document (phase 5)
+b19bb08 docs: add ER diagrams, DFD levels 0 and 1, and trust boundaries (phase 4)
+7874067 docs: add UML use cases, specifications, and analysis models (phase 3)
+48be980 docs: add agile engineering and requirements specifications (phases 1 & 2)
+2f665da chore: initialize secure project structure and repository baseline

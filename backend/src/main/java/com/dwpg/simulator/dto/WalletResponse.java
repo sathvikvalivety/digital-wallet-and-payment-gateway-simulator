@@ -23,9 +23,13 @@ public class WalletResponse {
     }
 
     public Long getWalletId() { return walletId; }
+    public Long getId() { return walletId; }
     public Long getUserId() { return userId; }
     public String getUsername() { return username; }
     public BigDecimal getBalance() { return balance; }
     public String getCurrency() { return currency; }
     public Instant getUpdatedAt() { return updatedAt; }
+    public Instant getCreatedAt() { return updatedAt; }
+    public String getStatus() { return "ACTIVE"; }
+    public String getAccountNumber() { return String.format("DWPG-88%04d", walletId); }
 }
