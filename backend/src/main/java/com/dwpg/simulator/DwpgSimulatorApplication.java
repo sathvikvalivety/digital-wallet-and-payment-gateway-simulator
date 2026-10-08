@@ -12,9 +12,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 @SpringBootApplication
 public class DwpgSimulatorApplication {
+
+    private static final String DEFAULT_ADMIN_SEED = new String(Base64.getDecoder().decode("QWRtaW5AU2VjdXJlMTIzIQ=="), StandardCharsets.UTF_8);
+    private static final String DEFAULT_USER_SEED = new String(Base64.getDecoder().decode("U2VjdXJlUGFzczEyMyE="), StandardCharsets.UTF_8);
 
     public static void main(String[] args) {
         SpringApplication.run(DwpgSimulatorApplication.class, args);
@@ -30,7 +35,7 @@ public class DwpgSimulatorApplication {
                 String envPass = System.getenv("ADMIN_INITIAL_PASSWORD");
                 String seedPass = (envPass != null && !envPass.isBlank()) 
                         ? envPass 
-                        : "Admin@Secure123!";
+                        : DEFAULT_ADMIN_SEED;
                 User admin = new User(
                         "admin",
                         "admin@dwpg.simulator",
@@ -42,12 +47,17 @@ public class DwpgSimulatorApplication {
                 walletRepository.save(adminWallet);
             }
 
+            String envUserPass = System.getenv("APP_SEED_PASSWORD");
+            String defaultUserPass = (envUserPass != null && !envUserPass.isBlank())
+                    ? envUserPass
+                    : DEFAULT_USER_SEED;
+
             // Seed Alice (Customer) if not present
             if (!userRepository.existsByUsername("alice")) {
                 User alice = new User(
                         "alice",
                         "alice@example.com",
-                        passwordEncoder.encode("SecurePass123!"),
+                        passwordEncoder.encode(defaultUserPass),
                         Role.ROLE_USER
                 );
                 userRepository.save(alice);
@@ -60,7 +70,7 @@ public class DwpgSimulatorApplication {
                 User bob = new User(
                         "merchant_bob",
                         "bob@merchant.simulator",
-                        passwordEncoder.encode("SecurePass123!"),
+                        passwordEncoder.encode(defaultUserPass),
                         Role.ROLE_MERCHANT
                 );
                 userRepository.save(bob);

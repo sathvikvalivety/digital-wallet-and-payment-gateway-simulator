@@ -18,6 +18,8 @@ import java.math.BigDecimal;
 @Service
 public class WalletService {
 
+    private static final String USER_NOT_FOUND_PREFIX = "User not found: ";
+
     private final WalletRepository walletRepository;
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
@@ -36,7 +38,7 @@ public class WalletService {
     @Transactional(readOnly = true)
     public WalletResponse getMyWallet(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_PREFIX + username));
         Wallet wallet = walletRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found for user: " + username));
 
@@ -98,7 +100,7 @@ public class WalletService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public WalletResponse fundMyWallet(FundRequest request, String username, String clientIp) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_PREFIX + username));
         Wallet wallet = walletRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found for user: " + username));
         return fundWallet(wallet.getId(), request, username, clientIp);
@@ -107,7 +109,7 @@ public class WalletService {
     @Transactional
     public WalletResponse createWallet(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
+                .orElseThrow(() -> new ResourceNotFoundException(USER_NOT_FOUND_PREFIX + username));
         return walletRepository.findByUserId(user.getId())
                 .map(this::toResponse)
                 .orElseGet(() -> {

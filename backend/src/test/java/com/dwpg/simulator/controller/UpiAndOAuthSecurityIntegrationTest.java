@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class UpiAndOAuthSecurityIntegrationTest {
+class UpiAndOAuthSecurityIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;

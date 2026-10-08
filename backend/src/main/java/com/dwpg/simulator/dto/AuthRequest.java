@@ -1,7 +1,6 @@
 package com.dwpg.simulator.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 public class AuthRequest {
     @NotBlank(message = "Username is required")

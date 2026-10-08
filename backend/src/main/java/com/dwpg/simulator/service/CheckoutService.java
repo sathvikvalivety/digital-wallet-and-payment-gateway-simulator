@@ -12,12 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.time.Instant;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class CheckoutService {
+
+    private static final String STATUS_COMPLETED = "COMPLETED";
+    private final SecureRandom secureRandom = new SecureRandom();
 
     private final CheckoutSessionRepository checkoutSessionRepository;
     private final MerchantRepository merchantRepository;
@@ -54,13 +57,10 @@ public class CheckoutService {
         String cleanKey = apiKey.trim();
         String keyHash = idempotencyService.computeSha256(cleanKey);
         Merchant merchant = merchantRepository.findByApiKeyHash(keyHash)
-                .orElseGet(() -> {
-                    // Fallback to find by plain apiKey if stored
-                    return merchantRepository.findAll().stream()
-                            .filter(m -> cleanKey.equals(m.getApiKey()))
-                            .findFirst()
-                            .orElseThrow(() -> new UnauthorizedAccessException("Invalid or revoked Merchant API key"));
-                });
+                .orElseGet(() -> merchantRepository.findAll().stream()
+                        .filter(m -> cleanKey.equals(m.getApiKey()))
+                        .findFirst()
+                        .orElseThrow(() -> new UnauthorizedAccessException("Invalid or revoked Merchant API key")));
 
         if (!"ACTIVE".equalsIgnoreCase(merchant.getStatus())) {
             throw new UnauthorizedAccessException("Merchant account is currently " + merchant.getStatus());
@@ -101,12 +101,12 @@ public class CheckoutService {
         CheckoutSession session = checkoutSessionRepository.findBySessionId(sessionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Checkout session not found: " + sessionId));
 
-        if ("COMPLETED".equalsIgnoreCase(session.getStatus())) {
+        if (STATUS_COMPLETED.equalsIgnoreCase(session.getStatus())) {
             String redirectUrl = buildRedirectUrl(session, session.getPaymentReference());
             return new CheckoutPaymentResult(
                     true,
                     session.getSessionId(),
-                    "COMPLETED",
+                    STATUS_COMPLETED,
                     session.getOrderId(),
                     session.getAmount(),
                     session.getCurrency(),
@@ -152,7 +152,7 @@ public class CheckoutService {
         transactionRepository.save(creditTx);
 
         // Update Session Status
-        session.setStatus("COMPLETED");
+        session.setStatus(STATUS_COMPLETED);
         session.setPaymentMethod(method);
         session.setPaymentReference(paymentRef);
         session.setCompletedAt(Instant.now());
@@ -167,7 +167,7 @@ public class CheckoutService {
         return new CheckoutPaymentResult(
                 true,
                 session.getSessionId(),
-                "COMPLETED",
+                STATUS_COMPLETED,
                 session.getOrderId(),
                 session.getAmount(),
                 session.getCurrency(),
@@ -195,7 +195,7 @@ public class CheckoutService {
 
     private String generateRealisticUtr() {
         long prefix = 428000000000L;
-        long randomPart = (long) (Math.random() * 9999999999L);
+        long randomPart = Math.abs(secureRandom.nextLong() % 10000000000L);
         return String.valueOf(prefix + randomPart);
     }
 
