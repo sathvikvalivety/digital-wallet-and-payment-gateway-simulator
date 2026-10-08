@@ -62,7 +62,7 @@ def build_master_report():
         ("Backend Architecture", "Java 21 (Temurin 21.0.12.1), Spring Boot 3.3.4, Spring Security, Spring Data JPA"),
         ("Database & Persistence", "MariaDB 11.4 / H2 Database (Pessimistic Row Locking, ACID Transactions)"),
         ("Frontend Application", "React 18 SPA, Vite 5.4, Unprivileged Nginx Reverse Proxy (UID 101)"),
-        ("Quality Gate & SAST Status", "SonarQube 9.9 LTS PASSED (0 Vulnerabilities, 0 Bugs, 0 Hotspots, 62.6% Coverage)")
+        ("Quality Gate & SAST Status", "SonarQube 9.9 LTS PASSED (0 Vulnerabilities, 0 Bugs, 0 Hotspots, 69.8% Coverage, 2.5% Duplications)")
     ]
     for idx, (k, v) in enumerate(meta):
         r = tbl_meta.rows[idx]
@@ -98,9 +98,9 @@ def build_master_report():
         ("Phase 10", "Sprint Execution and Scrum Metrics", "Sprint 1 & Sprint 2 execution, defect DEF-001 lifecycle, burndown and velocity analysis"),
         ("Phase 11", "Secure Development and Build Environment", "SonarQube SAST analysis, Quality Gate = OK, blocker S6437 remediation, code smell cleanup"),
         ("Phase 12", "Secure Coding and Refactoring", "Defect DEF-001 concurrency refactoring, pessimistic locking, Idempotency-Key caching, BOLA defense"),
-        ("Phase 13", "Containerized Development: Docker & Kubernetes", "Multi-stage non-root Dockerfiles (UID 10001 / UID 101), docker-compose, 11 k8s manifests"),
-        ("Phase 14", "CI/CD and Security Testing", "GitHub Actions workflow, 6 automated pipeline stages, Trivy scanning, Kubeconform linting"),
-        ("Phase 15", "Logging, Monitoring, Hardening and Secure Deployment", "AuditService PII scrub, SIEM detection rules, hardening checklists, Prometheus metrics"),
+        ("Phase 13 [7 Marks]", "Containerized Development: Docker & Kubernetes", "Multi-stage non-root Dockerfiles (UID 10001 / UID 101), 4 security practices, 11 k8s manifests in dwpg namespace, 2+ security controls"),
+        ("Phase 14 [7 Marks]", "CI/CD and Security Testing", "GitHub Actions workflow (5 stages), Unit/Integration/E2E tests, Input boundary fuzzing, DEF-001 defect retest"),
+        ("Phase 15 [5 Marks]", "Logging, Monitoring, Hardening and Secure Deployment", "AuditService 12 security events, 5 SIEM alerts, 6-domain hardening checklist, physical/operational controls"),
         ("Phase 16", "Final Security Review and Master Sign-Off", "Bidirectional traceability matrix, 25-checkpoint verification, production certification")
     ]
 
@@ -273,7 +273,7 @@ def build_master_report():
         "Static code analysis was executed using SonarQube 9.9.8 LTS against 68 indexed source files (2,375 NCLOC). "
         "The automated Quality Gate evaluated to PASSED / OK. One initial BLOCKER vulnerability (java:S6437 - hardcoded seed password) "
         "was remediated by externalizing admin credentials to environment variable ADMIN_INITIAL_PASSWORD with randomized CSPRNG fallback. "
-        "Final SAST metrics: 0 Vulnerabilities, 0 Bugs, 0 Security Hotspots, 0.0% Duplications, 4 trivial Code Smells, and 62.6% Coverage."
+        "Final SAST metrics: 0 Vulnerabilities, 0 Bugs, 0 Security Hotspots, 2.5% Duplications, Quality Gate: OK, and 69.8% Coverage. SonarQube S6437 (credentials) and S2245 (weak PRNG replaced with SecureRandom) remediated."
     )
     doc.add_paragraph(
         "Section 12.1: Secure Coding & Concurrency Refactoring Evidence:\n"
@@ -281,14 +281,14 @@ def build_master_report():
         "1. JVM Striped Synchronization: ConcurrentHashMap per user lock ensures requests for the same wallet serialize cleanly.\n"
         "2. TransactionTemplate Boundary: Wraps operations within managed transactional contexts.\n"
         "3. MariaDB Pessimistic Locking: WalletRepository applies @Lock(LockModeType.PESSIMISTIC_WRITE) executing 'SELECT ... FOR UPDATE'.\n"
-        "Verification: PaymentConcurrencyTest executed 10 simultaneous threads with $50 debit against a $100 balance. "
-        "Exactly 2 transactions succeeded, exactly 8 failed with InsufficientFundsException, and the final balance was exactly $0.00."
+        "Verification: PaymentConcurrencyTest executed 10 simultaneous threads with ₹50 debit against a ₹100 balance. "
+        "Exactly 2 transactions succeeded, exactly 8 failed with InsufficientFundsException, and the final balance was exactly ₹0.00 INR."
     )
 
     # ==========================================
     # PHASE 13 & 14
     # ==========================================
-    doc.add_heading("Phase 13 & 14: Containerization and CI/CD Pipeline", level=1)
+    doc.add_heading("Phase 13 [7 Marks] & Phase 14 [7 Marks]: Containerization and CI/CD Pipeline", level=1)
     doc.add_paragraph(
         "Section 13.1: Hardened Containerization:\n"
         "• Backend Container: Alpine JRE 21 running as unprivileged user 'appuser' (UID 10001, GID 10001), memory quota -XX:MaxRAMPercentage=75.0, "
@@ -309,7 +309,7 @@ def build_master_report():
     # ==========================================
     # PHASE 15 & 16
     # ==========================================
-    doc.add_heading("Phase 15 & 16: Hardening, SIEM Logging & Final Verification", level=1)
+    doc.add_heading("Phase 15 [5 Marks] & Phase 16: Hardening, SIEM Logging & Final Verification", level=1)
     doc.add_paragraph(
         "Section 15.1: System Hardening & SIEM Logging Plan:\n"
         "Application hardening suppresses stacktraces, enforces BCrypt 12 rounds, and isolates Actuator endpoints. "
