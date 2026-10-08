@@ -1,0 +1,34 @@
+<mxfile host="app.diagrams.net" modified="2026-10-08T00:00:00.000Z" agent="Antigravity" version="24.0.0">
+  <diagram id="DWPG-Analysis-Model" name="Payment Analysis Model">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <!-- Boundary -->
+        <mxCell id="b_ctrl" value="&lt;&lt;boundary&gt;&gt;&#xa;PaymentController&#xa;(REST API)" style="shape=umlBoundary;whiteSpace=wrap;html=1;fillColor=#EBF8FF;strokeColor=#3182CE;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="200" width="130" height="90" as="geometry" />
+        </mxCell>
+        <!-- Controls -->
+        <mxCell id="c_idem" value="&lt;&lt;control&gt;&gt;&#xa;IdempotencyService&#xa;(Replay Trap)" style="shape=umlControl;whiteSpace=wrap;html=1;fillColor=#E6FFFA;strokeColor=#319795;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="120" width="130" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="c_pay" value="&lt;&lt;control&gt;&gt;&#xa;PaymentService&#xa;(FSM &amp; Concurrency)" style="shape=umlControl;whiteSpace=wrap;html=1;fillColor=#E6FFFA;strokeColor=#319795;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="320" width="130" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="c_audit" value="&lt;&lt;control&gt;&gt;&#xa;AuditService&#xa;(Non-Repudiation)" style="shape=umlControl;whiteSpace=wrap;html=1;fillColor=#E6FFFA;strokeColor=#319795;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="520" width="130" height="90" as="geometry" />
+        </mxCell>
+        <!-- Entities -->
+        <mxCell id="e_wal" value="&lt;&lt;entity&gt;&gt;&#xa;Wallet&#xa;(Pessimistic Lock)" style="shape=umlEntity;whiteSpace=wrap;html=1;fillColor=#FEFCBF;strokeColor=#D69E2E;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="750" y="220" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pay" value="&lt;&lt;entity&gt;&gt;&#xa;Payment&#xa;(CONFIRMED)" style="shape=umlEntity;whiteSpace=wrap;html=1;fillColor=#FEFCBF;strokeColor=#D69E2E;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="750" y="380" width="120" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="e_audit" value="&lt;&lt;entity&gt;&gt;&#xa;AuditLog&#xa;(Immutable Store)" style="shape=umlEntity;whiteSpace=wrap;html=1;fillColor=#FEFCBF;strokeColor=#D69E2E;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="750" y="520" width="120" height="90" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
