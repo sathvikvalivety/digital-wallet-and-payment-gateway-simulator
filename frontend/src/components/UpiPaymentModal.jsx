@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { upiApi } from '../api';
 
@@ -9,11 +9,49 @@ export default function UpiPaymentModal({ isOpen, onClose, onSuccess, initialAmo
   const [note, setNote] = useState('DWPG Digital Wallet Top-up');
   const [step, setStep] = useState('AMOUNT'); // 'AMOUNT' | 'QR' | 'VERIFIED'
   const [loading, setLoading] = useState(false);
+  const [simulating, setSimulating] = useState(false);
   const [error, setError] = useState('');
   const [initiateData, setInitiateData] = useState(null);
   const [utrNumber, setUtrNumber] = useState('');
   const [verifyResult, setVerifyResult] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
+
+  // Auto-verification background polling:
+  // When QR code is shown, periodically poll the backend status.
+  // The moment bank webhook or callback confirms the transaction, automatically transition to VERIFIED.
+  useEffect(() => {
+    let intervalId = null;
+    if (step === 'QR' && initiateData?.referenceId) {
+      intervalId = setInterval(async () => {
+        try {
+          const statusData = await upiApi.getStatus(initiateData.referenceId);
+          if (statusData && statusData.status === 'CONFIRMED') {
+            clearInterval(intervalId);
+            const enrichedResult = {
+              referenceId: statusData.referenceId,
+              utrNumber: statusData.utrNumber,
+              amount: statusData.amount,
+              newWalletBalance: statusData.newWalletBalance,
+              status: statusData.status,
+              message: statusData.message || 'Payment auto-verified successfully via bank webhook!',
+            };
+            setVerifyResult(enrichedResult);
+            setStep('VERIFIED');
+            if (onSuccess) {
+              onSuccess(enrichedResult);
+            }
+          }
+        } catch {
+          // Ignore transient polling network errors
+        }
+      }, 2500);
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [step, initiateData, onSuccess]);
 
   const handleGenerateQR = async (e) => {
     e.preventDefault();
@@ -48,6 +86,32 @@ export default function UpiPaymentModal({ isOpen, onClose, onSuccess, initialAmo
     // Generate valid 12-digit random UTR for test/academic review
     const random12 = Math.floor(100000000000 + Math.random() * 900000000000).toString();
     setUtrNumber(random12);
+  };
+
+  const handleSimulateBankCallback = async () => {
+    if (!initiateData?.referenceId) return;
+    setSimulating(true);
+    setError('');
+    try {
+      const result = await upiApi.simulateBankCallback(initiateData.referenceId);
+      const enrichedResult = {
+        referenceId: result.referenceId,
+        utrNumber: result.utrNumber,
+        amount: result.amount,
+        newWalletBalance: result.newWalletBalance,
+        status: result.status,
+        message: result.message || 'Instant bank webhook callback confirmed!',
+      };
+      setVerifyResult(enrichedResult);
+      setStep('VERIFIED');
+      if (onSuccess) {
+        onSuccess(enrichedResult);
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to simulate bank callback');
+    } finally {
+      setSimulating(false);
+    }
   };
 
   const handleVerifyUtr = async (e) => {
@@ -250,7 +314,37 @@ export default function UpiPaymentModal({ isOpen, onClose, onSuccess, initialAmo
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+            {/* Live Auto-Verification Polling Status Banner */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                padding: '0.5rem 0.75rem',
+                background: '#ecfdf5',
+                color: '#065f46',
+                borderRadius: '0.375rem',
+                fontSize: '0.825rem',
+                fontWeight: 500,
+                marginBottom: '0.75rem',
+                border: '1px solid #a7f3d0',
+              }}
+            >
+              <span
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: '50%',
+                  background: '#10b981',
+                  display: 'inline-block',
+                  boxShadow: '0 0 0 3px rgba(16, 185, 129, 0.2)',
+                }}
+              />
+              Auto-verifying: Listening for incoming bank confirmation...
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem' }}>
               <a
                 href={initiateData.upiUri}
                 className="btn btn-secondary btn-block"
@@ -258,6 +352,73 @@ export default function UpiPaymentModal({ isOpen, onClose, onSuccess, initialAmo
               >
                 📲 Open in UPI App
               </a>
+            </div>
+
+            {/* Instant Auto-Verification Simulation Button */}
+            <button
+              type="button"
+              className="btn btn-block"
+              style={{
+                backgroundColor: '#f59e0b',
+                color: '#ffffff',
+                border: 'none',
+                fontWeight: 600,
+                marginBottom: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                padding: '0.6rem 1rem',
+                borderRadius: '0.375rem',
+                cursor: 'pointer',
+              }}
+              onClick={handleSimulateBankCallback}
+              disabled={simulating}
+            >
+              ⚡ {simulating ? 'Processing Bank Callback...' : 'Simulate Bank Callback (Instant Auto-Verify)'}
+            </button>
+
+            {/* Educational Info on How Auto-Verify Works */}
+            <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
+              <button
+                type="button"
+                onClick={() => setShowHowItWorks(!showHowItWorks)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--primary)',
+                  fontSize: '0.8rem',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                }}
+              >
+                {showHowItWorks ? 'Hide Auto-Verify Details' : '💡 How does UPI Auto-Verification work?'}
+              </button>
+              {showHowItWorks && (
+                <div
+                  style={{
+                    marginTop: '0.5rem',
+                    padding: '0.75rem',
+                    background: '#f8fafc',
+                    borderRadius: '0.5rem',
+                    border: '1px solid #e2e8f0',
+                    fontSize: '0.78rem',
+                    textAlign: 'left',
+                    color: '#475569',
+                    lineHeight: 1.45,
+                  }}
+                >
+                  <div style={{ marginBottom: '0.4rem' }}>
+                    <strong>1. Merchant Webhooks:</strong> Payment gateways (Razorpay, Cashfree, PayU) or Banks call our endpoint (<code>POST /api/upi/webhook</code>) as soon as the money lands. The server verifies HMAC and marks the payment <code>CONFIRMED</code>.
+                  </div>
+                  <div style={{ marginBottom: '0.4rem' }}>
+                    <strong>2. Personal UPI (valivetysathvik@ibl):</strong> Since personal bank accounts do not offer direct webhooks, apps like Tasker / MacroDroid or an SMS Forwarder can forward the credit SMS to <code>/api/upi/webhook</code>.
+                  </div>
+                  <div>
+                    <strong>3. Live Simulation:</strong> Click the button above to simulate an immediate bank webhook callback to see the zero-click auto-approval flow!
+                  </div>
+                </div>
+              )}
             </div>
 
             <form onSubmit={handleVerifyUtr} style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>

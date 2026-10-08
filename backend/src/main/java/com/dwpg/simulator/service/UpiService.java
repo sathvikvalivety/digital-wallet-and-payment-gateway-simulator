@@ -146,6 +146,128 @@ public class UpiService {
     }
 
     @Transactional(readOnly = true)
+    public UpiStatusResponse getStatus(String referenceId) {
+        UpiTransaction tx = upiTransactionRepository.findByReferenceId(referenceId)
+                .orElseThrow(() -> new ResourceNotFoundException("UPI transaction not found for reference: " + referenceId));
+
+        BigDecimal currentBalance = null;
+        if ("CONFIRMED".equals(tx.getStatus())) {
+            try {
+                WalletResponse wallet = walletService.getMyWallet(tx.getUser().getUsername());
+                currentBalance = wallet.getBalance();
+            } catch (Exception ignored) {}
+        }
+
+        return new UpiStatusResponse(
+                tx.getReferenceId(),
+                tx.getStatus(),
+                tx.getAmount(),
+                tx.getUtrNumber(),
+                currentBalance,
+                "CONFIRMED".equals(tx.getStatus()) ? "Payment has been confirmed." : "Waiting for payment confirmation.",
+                tx.getCreatedAt(),
+                tx.getCompletedAt()
+        );
+    }
+
+    @Transactional
+    public UpiStatusResponse processWebhook(UpiWebhookRequest request, String clientIp) {
+        if (request.getReferenceId() == null || request.getReferenceId().isBlank()) {
+            throw new IllegalArgumentException("Reference ID is required in webhook payload");
+        }
+
+        UpiTransaction tx = upiTransactionRepository.findByReferenceId(request.getReferenceId().trim())
+                .orElseThrow(() -> new ResourceNotFoundException("UPI transaction not found for reference: " + request.getReferenceId()));
+
+        if ("CONFIRMED".equals(tx.getStatus())) {
+            BigDecimal bal = BigDecimal.ZERO;
+            try {
+                bal = walletService.getMyWallet(tx.getUser().getUsername()).getBalance();
+            } catch (Exception ignored) {}
+            return new UpiStatusResponse(
+                    tx.getReferenceId(),
+                    tx.getStatus(),
+                    tx.getAmount(),
+                    tx.getUtrNumber(),
+                    bal,
+                    "UPI payment was already confirmed previously.",
+                    tx.getCreatedAt(),
+                    tx.getCompletedAt()
+            );
+        }
+
+        // Validate amount if sent by webhook
+        if (request.getAmount() != null && request.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+            if (tx.getAmount().compareTo(request.getAmount()) != 0) {
+                auditService.logEvent(AuditEventType.SUSPICIOUS_ACTIVITY, tx.getId(), tx.getUser().getUsername(), "FAILED",
+                        "Webhook amount mismatch. Expected: " + tx.getAmount() + ", Received: " + request.getAmount(), clientIp);
+                throw new IllegalArgumentException("Webhook payment amount mismatch");
+            }
+        }
+
+        // If webhook status is FAILED
+        if (request.getStatus() != null && ("FAILED".equalsIgnoreCase(request.getStatus()) || "FAILURE".equalsIgnoreCase(request.getStatus()))) {
+            tx.setStatus("FAILED");
+            tx.setCompletedAt(Instant.now());
+            upiTransactionRepository.save(tx);
+            auditService.logEvent(AuditEventType.UPI_PAYMENT_FAILED, tx.getId(), tx.getUser().getUsername(), "FAILED",
+                    "UPI payment marked FAILED via webhook callback", clientIp);
+            return new UpiStatusResponse(tx.getReferenceId(), "FAILED", tx.getAmount(), null, null, "Payment failed via gateway callback", tx.getCreatedAt(), tx.getCompletedAt());
+        }
+
+        // Determine UTR
+        String utr = (request.getUtrNumber() != null && !request.getUtrNumber().isBlank())
+                ? request.getUtrNumber().trim()
+                : generateRealisticUtr();
+
+        // Check duplicate UTR
+        if (upiTransactionRepository.existsByUtrNumber(utr)) {
+            auditService.logEvent(AuditEventType.REPLAY_DETECTED, tx.getId(), tx.getUser().getUsername(), "FAILED",
+                    "Webhook duplicate UTR detected: " + utr, clientIp);
+            throw new IdempotencyException("Duplicate UTR detected in webhook: " + utr);
+        }
+
+        tx.setUtrNumber(utr);
+        tx.setStatus("CONFIRMED");
+        tx.setCompletedAt(Instant.now());
+        upiTransactionRepository.save(tx);
+
+        BigDecimal newBalance = BigDecimal.ZERO;
+        if ("TOPUP".equalsIgnoreCase(tx.getPurpose())) {
+            walletService.createWallet(tx.getUser().getUsername());
+            WalletResponse walletResp = walletService.fundMyWallet(new FundRequest(tx.getAmount()), tx.getUser().getUsername(), clientIp);
+            newBalance = walletResp.getBalance();
+        }
+
+        auditService.logEvent(AuditEventType.UPI_PAYMENT_CONFIRMED, tx.getId(), tx.getUser().getUsername(), "SUCCESS",
+                "UPI payment auto-verified via Webhook callback. UTR: " + utr + " Amount: ₹" + tx.getAmount(), clientIp);
+
+        return new UpiStatusResponse(
+                tx.getReferenceId(),
+                "CONFIRMED",
+                tx.getAmount(),
+                utr,
+                newBalance,
+                "UPI payment auto-verified successfully via bank webhook! Credited ₹" + tx.getAmount() + " to wallet.",
+                tx.getCreatedAt(),
+                tx.getCompletedAt()
+        );
+    }
+
+    @Transactional
+    public UpiStatusResponse simulateBankCallback(String referenceId, String clientIp) {
+        String mockUtr = generateRealisticUtr();
+        UpiWebhookRequest req = new UpiWebhookRequest(referenceId, mockUtr, null, "SUCCESS");
+        return processWebhook(req, clientIp);
+    }
+
+    private String generateRealisticUtr() {
+        long prefix = 428000000000L;
+        long randomPart = (long) (Math.random() * 9999999999L);
+        return String.valueOf(prefix + randomPart);
+    }
+
+    @Transactional(readOnly = true)
     public List<UpiTransaction> getMyTransactions(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));

@@ -44,6 +44,25 @@ public class UpiController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/status/{referenceId}")
+    public ResponseEntity<UpiStatusResponse> getStatus(@PathVariable String referenceId) {
+        return ResponseEntity.ok(upiService.getStatus(referenceId));
+    }
+
+    @PostMapping("/webhook")
+    public ResponseEntity<UpiStatusResponse> handleWebhook(@Valid @RequestBody UpiWebhookRequest request, HttpServletRequest httpRequest) {
+        String clientIp = extractClientIp(httpRequest);
+        UpiStatusResponse response = upiService.processWebhook(request, clientIp);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/simulate-callback/{referenceId}")
+    public ResponseEntity<UpiStatusResponse> simulateBankCallback(@PathVariable String referenceId, HttpServletRequest httpRequest) {
+        String clientIp = extractClientIp(httpRequest);
+        UpiStatusResponse response = upiService.simulateBankCallback(referenceId, clientIp);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/my")
     public ResponseEntity<List<UpiTransaction>> getMyTransactions() {
         String username = SecurityUtils.getCurrentUsername();

@@ -172,4 +172,66 @@ public class UpiAndOAuthSecurityIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("You do not own this UPI payment reference"));
     }
+
+    @Test
+    @DisplayName("UPI-04: Status endpoint returns pending then confirmed after webhook auto-verification")
+    void testUpiStatusAndWebhookAutoVerification() throws Exception {
+        // 1. Initiate
+        UpiInitiateRequest req = new UpiInitiateRequest(BigDecimal.valueOf(450.00), "Webhook Auto Verify Test", "TOPUP");
+        MvcResult initResult = mockMvc.perform(post("/api/upi/initiate")
+                        .header("Authorization", userToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        UpiInitiateResponse initResp = objectMapper.readValue(initResult.getResponse().getContentAsString(), UpiInitiateResponse.class);
+        String refId = initResp.getReferenceId();
+
+        // 2. Query status initially -> PENDING
+        mockMvc.perform(get("/api/upi/status/" + refId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.referenceId").value(refId))
+                .andExpect(jsonPath("$.status").value("PENDING"));
+
+        // 3. Post webhook callback simulating bank/aggregator
+        String bankUtr = "BANK" + System.currentTimeMillis();
+        UpiWebhookRequest webhookReq = new UpiWebhookRequest(refId, bankUtr, BigDecimal.valueOf(450.00), "SUCCESS");
+        mockMvc.perform(post("/api/upi/webhook")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(webhookReq)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("CONFIRMED"))
+                .andExpect(jsonPath("$.utrNumber").value(bankUtr));
+
+        // 4. Query status again -> CONFIRMED
+        mockMvc.perform(get("/api/upi/status/" + refId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.referenceId").value(refId))
+                .andExpect(jsonPath("$.status").value("CONFIRMED"))
+                .andExpect(jsonPath("$.utrNumber").value(bankUtr))
+                .andExpect(jsonPath("$.newWalletBalance").isNotEmpty());
+    }
+
+    @Test
+    @DisplayName("UPI-05: Simulate bank callback triggers zero-click auto-verification")
+    void testSimulateBankCallback() throws Exception {
+        UpiInitiateRequest req = new UpiInitiateRequest(BigDecimal.valueOf(100.00), "Simulate Test", "TOPUP");
+        MvcResult initResult = mockMvc.perform(post("/api/upi/initiate")
+                        .header("Authorization", userToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        UpiInitiateResponse initResp = objectMapper.readValue(initResult.getResponse().getContentAsString(), UpiInitiateResponse.class);
+        String refId = initResp.getReferenceId();
+
+        // Trigger simulation
+        mockMvc.perform(post("/api/upi/simulate-callback/" + refId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("CONFIRMED"))
+                .andExpect(jsonPath("$.utrNumber").isNotEmpty())
+                .andExpect(jsonPath("$.referenceId").value(refId));
+    }
 }

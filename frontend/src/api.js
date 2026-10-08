@@ -116,6 +116,15 @@ export const upiApi = {
       method: 'POST',
       body: JSON.stringify({ referenceId, utrNumber }),
     }),
+  getStatus: (referenceId) =>
+    apiRequest(`/upi/status/${encodeURIComponent(referenceId)}`, { method: 'GET' }),
+  simulateBankCallback: (referenceId) =>
+    apiRequest(`/upi/simulate-callback/${encodeURIComponent(referenceId)}`, { method: 'POST' }),
+  sendWebhook: (referenceId, utrNumber, amount, status = 'SUCCESS') =>
+    apiRequest('/upi/webhook', {
+      method: 'POST',
+      body: JSON.stringify({ referenceId, utrNumber, amount, status }),
+    }),
   getMyTransactions: () => apiRequest('/upi/my', { method: 'GET' }),
 };
 
