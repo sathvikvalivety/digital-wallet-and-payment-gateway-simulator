@@ -24,6 +24,9 @@ public class User {
     @Column(nullable = false, length = 20)
     private Role role;
 
+    @Column(name = "auth_provider", length = 20)
+    private String authProvider = "LOCAL";
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
@@ -60,6 +63,9 @@ public class User {
 
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
+
+    public String getAuthProvider() { return authProvider; }
+    public void setAuthProvider(String authProvider) { this.authProvider = authProvider; }
 
     public Instant getCreatedAt() { return createdAt; }
     public Instant getUpdatedAt() { return updatedAt; }

@@ -2,6 +2,7 @@ package com.dwpg.simulator.service;
 
 import com.dwpg.simulator.dto.AuthRequest;
 import com.dwpg.simulator.dto.AuthResponse;
+import com.dwpg.simulator.dto.GoogleOAuthRequest;
 import com.dwpg.simulator.dto.RegisterRequest;
 import com.dwpg.simulator.entity.AuditEventType;
 import com.dwpg.simulator.entity.Role;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -87,6 +89,47 @@ public class AuthService {
 
         auditService.logEvent(AuditEventType.LOGIN_SUCCESS, user.getId(), user.getUsername(), "SUCCESS",
                 "User authenticated successfully.", clientIp);
+
+        String token = jwtTokenProvider.generateToken(user.getUsername(), user.getRole().name());
+        return new AuthResponse(token, user.getUsername(), user.getRole().name(), user.getId(), walletId);
+    }
+
+    @Transactional
+    public AuthResponse loginWithGoogle(GoogleOAuthRequest request, String clientIp) {
+        String email = request.getEmail().trim().toLowerCase();
+
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            String baseUsername = (request.getName() != null && !request.getName().isBlank())
+                    ? request.getName().toLowerCase().replaceAll("[^a-z0-9]", "_")
+                    : email.split("@")[0].replaceAll("[^a-z0-9]", "_");
+
+            if (baseUsername.length() < 3) baseUsername = "user_" + baseUsername;
+            if (baseUsername.length() > 35) baseUsername = baseUsername.substring(0, 35);
+
+            String candidateUsername = baseUsername;
+            int counter = 1;
+            while (userRepository.existsByUsername(candidateUsername)) {
+                candidateUsername = baseUsername + "_" + counter++;
+            }
+
+            String randomPassword = UUID.randomUUID().toString() + UUID.randomUUID().toString();
+            user = new User(candidateUsername, email, passwordEncoder.encode(randomPassword), Role.ROLE_USER);
+            user.setAuthProvider("GOOGLE");
+            user = userRepository.save(user);
+
+            Wallet wallet = new Wallet(user, BigDecimal.valueOf(100.00), "USD");
+            wallet = walletRepository.save(wallet);
+
+            auditService.logEvent(AuditEventType.WALLET_CREATED, wallet.getId(), user.getUsername(), "SUCCESS",
+                    "Google OAuth user provisioned with digital wallet.", clientIp);
+        }
+
+        Wallet wallet = walletRepository.findByUserId(user.getId()).orElse(null);
+        Long walletId = wallet != null ? wallet.getId() : null;
+
+        auditService.logEvent(AuditEventType.OAUTH_LOGIN_SUCCESS, user.getId(), user.getUsername(), "SUCCESS",
+                "Google OAuth login successful for email: " + email, clientIp);
 
         String token = jwtTokenProvider.generateToken(user.getUsername(), user.getRole().name());
         return new AuthResponse(token, user.getUsername(), user.getRole().name(), user.getId(), walletId);

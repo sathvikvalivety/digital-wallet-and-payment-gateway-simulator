@@ -2,6 +2,7 @@ package com.dwpg.simulator.controller;
 
 import com.dwpg.simulator.dto.AuthRequest;
 import com.dwpg.simulator.dto.AuthResponse;
+import com.dwpg.simulator.dto.GoogleOAuthRequest;
 import com.dwpg.simulator.dto.RegisterRequest;
 import com.dwpg.simulator.dto.WalletResponse;
 import com.dwpg.simulator.security.SecurityUtils;
@@ -36,6 +37,13 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest request, HttpServletRequest httpRequest) {
         String clientIp = extractClientIp(httpRequest);
         AuthResponse response = authService.login(request, clientIp);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/oauth/google")
+    public ResponseEntity<AuthResponse> loginWithGoogle(@Valid @RequestBody GoogleOAuthRequest request, HttpServletRequest httpRequest) {
+        String clientIp = extractClientIp(httpRequest);
+        AuthResponse response = authService.loginWithGoogle(request, clientIp);
         return ResponseEntity.ok(response);
     }
 

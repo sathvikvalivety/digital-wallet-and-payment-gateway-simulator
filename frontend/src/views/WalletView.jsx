@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { walletApi } from '../api';
+import UpiPaymentModal from '../components/UpiPaymentModal';
 
 export default function WalletView() {
   const [wallet, setWallet] = useState(null);
@@ -8,6 +9,7 @@ export default function WalletView() {
   const [topUpAmount, setTopUpAmount] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
+  const [showUpiModal, setShowUpiModal] = useState(false);
 
   const loadWallet = async () => {
     setError('');
@@ -177,10 +179,44 @@ export default function WalletView() {
               <button type="submit" className="btn btn-primary btn-block" disabled={actionLoading}>
                 {actionLoading ? 'Processing Top-Up...' : 'Top-Up Wallet'}
               </button>
+
+              <div style={{ margin: '1rem 0', textAlign: 'center', position: 'relative' }}>
+                <span style={{ background: 'var(--card-bg, #ffffff)', padding: '0 0.5rem', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                  OR PAY WITH UPI
+                </span>
+              </div>
+
+              <button
+                type="button"
+                className="btn btn-secondary btn-block"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  borderColor: '#0284c7',
+                  color: '#0284c7',
+                  fontWeight: 600,
+                }}
+                onClick={() => setShowUpiModal(true)}
+              >
+                <span>⚡</span> Pay via UPI QR (valivetysathvik@ibl)
+              </button>
             </form>
           </div>
         </div>
       )}
+
+      <UpiPaymentModal
+        isOpen={showUpiModal}
+        onClose={() => setShowUpiModal(false)}
+        initialAmount={topUpAmount || '500'}
+        purpose="TOPUP"
+        onSuccess={() => {
+          loadWallet();
+          setSuccessMsg('UPI payment verified and wallet balance updated!');
+        }}
+      />
     </div>
   );
 }

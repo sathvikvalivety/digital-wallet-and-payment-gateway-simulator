@@ -86,12 +86,37 @@ export const authApi = {
       method: 'POST',
       body: JSON.stringify({ username, password }),
     }),
+  loginWithGoogle: (payload) =>
+    apiRequest('/auth/oauth/google', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
   register: (username, email, password, role = 'ROLE_USER') =>
     apiRequest('/auth/register', {
       method: 'POST',
       body: JSON.stringify({ username, email, password, role }),
     }),
   getMe: () => apiRequest('/auth/me', { method: 'GET' }),
+};
+
+// UPI Payment & QR Code Endpoints
+export const upiApi = {
+  initiate: (amount, note = '', purpose = 'TOPUP', merchantId = null) =>
+    apiRequest('/upi/initiate', {
+      method: 'POST',
+      body: JSON.stringify({
+        amount: parseFloat(amount),
+        note,
+        purpose,
+        merchantId,
+      }),
+    }),
+  verify: (referenceId, utrNumber) =>
+    apiRequest('/upi/verify', {
+      method: 'POST',
+      body: JSON.stringify({ referenceId, utrNumber }),
+    }),
+  getMyTransactions: () => apiRequest('/upi/my', { method: 'GET' }),
 };
 
 // Wallet Endpoints

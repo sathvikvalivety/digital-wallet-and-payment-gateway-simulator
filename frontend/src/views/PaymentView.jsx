@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { paymentApi, walletApi } from '../api';
+import UpiPaymentModal from '../components/UpiPaymentModal';
 
 function generateUUID() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -20,6 +21,7 @@ export default function PaymentView() {
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
   const [replayHistory, setReplayHistory] = useState([]);
+  const [showUpiModal, setShowUpiModal] = useState(false);
 
   useEffect(() => {
     walletApi.getWallet()
@@ -180,6 +182,29 @@ export default function PaymentView() {
                 Simulate Replay Attack
               </button>
             </div>
+
+            <div style={{ margin: '1rem 0', textAlign: 'center', position: 'relative' }}>
+              <span style={{ background: 'var(--card-bg, #ffffff)', padding: '0 0.5rem', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                OR PAY WITH UPI
+              </span>
+            </div>
+
+            <button
+              type="button"
+              className="btn btn-secondary btn-block"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                borderColor: '#0284c7',
+                color: '#0284c7',
+                fontWeight: 600,
+              }}
+              onClick={() => setShowUpiModal(true)}
+            >
+              <span>⚡</span> Pay via UPI QR (valivetysathvik@ibl)
+            </button>
           </form>
         </div>
 
@@ -285,6 +310,18 @@ export default function PaymentView() {
           </div>
         </div>
       )}
+
+      <UpiPaymentModal
+        isOpen={showUpiModal}
+        onClose={() => setShowUpiModal(false)}
+        initialAmount={amount || '25.00'}
+        purpose="PAYMENT"
+        onSuccess={() => {
+          walletApi.getWallet()
+            .then((w) => setWalletBalance(parseFloat(w.balance)))
+            .catch(() => {});
+        }}
+      />
     </div>
   );
 }

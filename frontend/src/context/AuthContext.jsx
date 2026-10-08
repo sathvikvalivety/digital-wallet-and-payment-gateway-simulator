@@ -41,6 +41,21 @@ export function AuthProvider({ children }) {
     return userData;
   };
 
+  const loginWithGoogle = async (payload) => {
+    const data = await authApi.loginWithGoogle(payload);
+    setToken(data.token);
+    setAuthToken(data.token);
+    const userData = {
+      id: data.id,
+      username: data.username,
+      email: data.email,
+      role: data.role,
+    };
+    setUser(userData);
+    setCurrentUser(userData);
+    return userData;
+  };
+
   const register = async (username, email, password, role) => {
     return await authApi.register(username, email, password, role);
   };
@@ -72,6 +87,7 @@ export function AuthProvider({ children }) {
     isAdmin: user?.role === 'ROLE_ADMIN',
     isMerchant: user?.role === 'ROLE_MERCHANT',
     login,
+    loginWithGoogle,
     register,
     logout,
     refreshUser,
