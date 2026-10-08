@@ -1,0 +1,39 @@
+# Secrets and Environment Variables
+.env
+.env.*
+!.env.example
+*.env
+
+# Build Artifacts
+target/
+build/
+dist/
+node_modules/
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+logs/
+
+# IDE / Editor configuration
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary & Cache files
+scratch/
+__pycache__/
+*.pyc
+.scannerwork/
+.sonar/
+.minikube/
+.kube/
+
+# Antigravity Brain / metadata
+.system_generated/
