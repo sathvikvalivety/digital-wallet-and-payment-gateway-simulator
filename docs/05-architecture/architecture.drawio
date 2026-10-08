@@ -1,0 +1,15 @@
+<mxfile host="app.diagrams.net" modified="2026-10-08T00:00:00.000Z" agent="Antigravity" version="24.0.0">
+  <diagram id="DWPG-Arch" name="Layered Secure Architecture">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="l_ui" value="Presentation Tier: React 18 + Vite Single Page Application" style="rounded=1;fillColor=#EBF8FF;strokeColor=#3182CE;fontStyle=1;fontSize=14;" vertex="1" parent="1"><mxGeometry x="100" y="60" width="1200" height="80" as="geometry" /></mxCell>
+        <mxCell id="l_api" value="API &amp; Security Filter Tier: Spring Security 6, JWT Filter, Idempotency Gate" style="rounded=1;fillColor=#E6FFFA;strokeColor=#319795;fontStyle=1;fontSize=14;" vertex="1" parent="1"><mxGeometry x="100" y="190" width="1200" height="80" as="geometry" /></mxCell>
+        <mxCell id="l_svc" value="Business Service Tier: WalletService, PaymentService, MerchantService, RefundService, AuditService" style="rounded=1;fillColor=#FEFCBF;strokeColor=#D69E2E;fontStyle=1;fontSize=14;" vertex="1" parent="1"><mxGeometry x="100" y="320" width="1200" height="120" as="geometry" /></mxCell>
+        <mxCell id="l_dal" value="Persistence Tier: Spring Data JPA &amp; Hibernate (Pessimistic Write Locking)" style="rounded=1;fillColor=#EDF2F7;strokeColor=#4A5568;fontStyle=1;fontSize=14;" vertex="1" parent="1"><mxGeometry x="100" y="490" width="1200" height="80" as="geometry" /></mxCell>
+        <mxCell id="l_db" value="Database Engine: MariaDB 11.4 (ACID Transactions &amp; Check Constraints)" style="rounded=1;fillColor=#FED7D7;strokeColor=#E53E3E;fontStyle=1;fontSize=14;" vertex="1" parent="1"><mxGeometry x="100" y="620" width="1200" height="80" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
