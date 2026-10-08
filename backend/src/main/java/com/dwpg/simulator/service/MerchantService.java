@@ -54,10 +54,11 @@ public class MerchantService {
                 .orElseGet(() -> walletRepository.save(new Wallet(user, BigDecimal.ZERO, "USD")));
 
         // Generate high-entropy API key
-        String plainApiKey = "mkey_" + UUID.randomUUID().toString().replace("-", "");
+        String plainApiKey = "dwpg_live_" + UUID.randomUUID().toString().replace("-", "");
         String apiKeyHash = idempotencyService.computeSha256(plainApiKey);
 
         Merchant merchant = new Merchant(user, settlementWallet, request.getBusinessName(), apiKeyHash);
+        merchant.setApiKey(plainApiKey);
         merchant = merchantRepository.save(merchant);
 
         return new MerchantResponse(
@@ -87,12 +88,20 @@ public class MerchantService {
         );
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public MerchantResponse getMerchantByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
         Merchant merchant = merchantRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Merchant profile not registered for: " + username));
+
+        // If legacy merchant had no plain apiKey stored, generate and persist one
+        if (merchant.getApiKey() == null || merchant.getApiKey().isBlank()) {
+            String newKey = "dwpg_live_" + UUID.randomUUID().toString().replace("-", "");
+            merchant.setApiKey(newKey);
+            merchant.setApiKeyHash(idempotencyService.computeSha256(newKey));
+            merchant = merchantRepository.save(merchant);
+        }
 
         return new MerchantResponse(
                 merchant.getId(),
@@ -100,7 +109,30 @@ public class MerchantService {
                 merchant.getBusinessName(),
                 merchant.getWallet().getId(),
                 merchant.getStatus(),
-                null,
+                merchant.getApiKey(),
+                merchant.getCreatedAt()
+        );
+    }
+
+    @Transactional
+    public MerchantResponse regenerateApiKey(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
+        Merchant merchant = merchantRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Merchant profile not registered for: " + username));
+
+        String newKey = "dwpg_live_" + UUID.randomUUID().toString().replace("-", "");
+        merchant.setApiKey(newKey);
+        merchant.setApiKeyHash(idempotencyService.computeSha256(newKey));
+        merchant = merchantRepository.save(merchant);
+
+        return new MerchantResponse(
+                merchant.getId(),
+                user.getId(),
+                merchant.getBusinessName(),
+                merchant.getWallet().getId(),
+                merchant.getStatus(),
+                newKey,
                 merchant.getCreatedAt()
         );
     }

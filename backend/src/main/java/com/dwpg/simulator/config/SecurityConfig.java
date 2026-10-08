@@ -52,6 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/upi/webhook").permitAll()
                         .requestMatchers("/api/upi/status/**").permitAll()
                         .requestMatchers("/api/upi/simulate-callback/**").permitAll()
+                        .requestMatchers("/api/checkout/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()

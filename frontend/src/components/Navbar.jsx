@@ -47,6 +47,14 @@ export default function Navbar({ activeTab, setActiveTab }) {
               Merchant
             </button>
 
+            <button
+              className={`nav-item ${activeTab === 'demo-store' ? 'active' : ''}`}
+              onClick={() => setActiveTab('demo-store')}
+              style={{ color: '#4f46e5', fontWeight: 600 }}
+            >
+              🛒 Demo Store
+            </button>
+
             {isAdmin && (
               <button
                 className={`nav-item ${activeTab === 'admin' ? 'active' : ''}`}

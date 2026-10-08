@@ -56,6 +56,12 @@ class PaymentSecurityIntegrationTest {
     private IdempotencyRecordRepository idempotencyRecordRepository;
 
     @Autowired
+    private com.dwpg.simulator.repository.CheckoutSessionRepository checkoutSessionRepository;
+
+    @Autowired
+    private com.dwpg.simulator.repository.UpiTransactionRepository upiTransactionRepository;
+
+    @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
     private String userToken;
@@ -70,6 +76,8 @@ class PaymentSecurityIntegrationTest {
         transactionRepository.deleteAll();
         paymentRepository.deleteAll();
         idempotencyRecordRepository.deleteAll();
+        checkoutSessionRepository.deleteAll();
+        upiTransactionRepository.deleteAll();
         merchantRepository.deleteAll();
         walletRepository.deleteAll();
         userRepository.deleteAll();

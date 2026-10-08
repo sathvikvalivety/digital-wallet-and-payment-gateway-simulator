@@ -35,6 +35,13 @@ public class MerchantController {
         return ResponseEntity.ok(merchantService.getMerchantByUsername(username));
     }
 
+    @PostMapping("/regenerate-key")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<MerchantResponse> regenerateApiKey() {
+        String username = SecurityUtils.getCurrentUsername();
+        return ResponseEntity.ok(merchantService.regenerateApiKey(username));
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<MerchantResponse> getMerchantById(@PathVariable("id") Long id) {

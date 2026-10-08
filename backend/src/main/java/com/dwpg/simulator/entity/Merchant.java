@@ -25,6 +25,9 @@ public class Merchant {
     @Column(name = "api_key_hash", nullable = false, length = 255)
     private String apiKeyHash;
 
+    @Column(name = "api_key", length = 255)
+    private String apiKey;
+
     @Column(nullable = false, length = 20)
     private String status = "ACTIVE";
 
@@ -56,6 +59,9 @@ public class Merchant {
 
     public String getApiKeyHash() { return apiKeyHash; }
     public void setApiKeyHash(String apiKeyHash) { this.apiKeyHash = apiKeyHash; }
+
+    public String getApiKey() { return apiKey; }
+    public void setApiKey(String apiKey) { this.apiKey = apiKey; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }

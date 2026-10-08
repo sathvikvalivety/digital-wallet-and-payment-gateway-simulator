@@ -148,6 +148,26 @@ export const merchantApi = {
     }),
   getMyMerchant: () => apiRequest('/merchant/me', { method: 'GET' }),
   getMerchant: (id) => apiRequest(`/merchant/${id}`, { method: 'GET' }),
+  regenerateApiKey: () => apiRequest('/merchant/regenerate-key', { method: 'POST' }),
+};
+
+// Hosted Checkout & Merchant Gateway Integration Endpoints
+export const checkoutApi = {
+  createSession: (apiKey, sessionData) =>
+    apiRequest('/checkout/session', {
+      method: 'POST',
+      headers: {
+        'X-Api-Key': apiKey,
+      },
+      body: JSON.stringify(sessionData),
+    }),
+  getSession: (sessionId) =>
+    apiRequest(`/checkout/session/${encodeURIComponent(sessionId)}`, { method: 'GET' }),
+  completeSession: (sessionId, paymentData = {}) =>
+    apiRequest(`/checkout/session/${encodeURIComponent(sessionId)}/complete`, {
+      method: 'POST',
+      body: JSON.stringify(paymentData),
+    }),
 };
 
 // Payment Endpoints (with Idempotency Key support)
