@@ -149,21 +149,25 @@ kubectl get pods -n dwpg
 
 ---
 
-## 5. Security & Exam Phase Documentation
-All documentation deliverables for Phases 1 through 16 are organized in `docs/`:
-- `docs/01-agile/` - Agile approach, Manifesto mapping, Refactoring opportunities, Agile limitations
-- `docs/02-requirements/` - SRS document, requirements traceability, CIA classification
-- `docs/03-uml/` - Use case diagrams, specifications, sequence/analysis models
-- `docs/04-data-flow/` - DFD Level 0, Level 1, ER diagram, Trust boundaries
-- `docs/05-architecture/` - Layered architecture, Component diagram, Design patterns
-- `docs/06-ui/` - Wireframes and design rationale
-- `docs/07-security/` - STRIDE threat model, Asset/CIA matrix, Information flow, Vulnerabilities
-- `docs/08-attack-tree/` - Attack tree, Refined security architecture
-- `docs/09-backlog/` - User stories, Acceptance criteria, Jira backlog export
-- `docs/10-sprint-metrics/` - Sprint 1 & 2 reviews, Burndown, Velocity, Defect carry-over tracking
-- `docs/11-secure-build/` - Secure build checklist, SonarQube SAST report
-- `docs/12-secure-coding/` - Vulnerability before/after code refactoring analysis
-- `docs/13-docker-kubernetes/` - Container hardening, Kubernetes security manifests
-- `docs/14-cicd-testing/` - GitHub Actions pipeline, Automated test reports, Fuzzing results
-- `docs/15-hardening/` - Production hardening checklist, Logging & monitoring plan
-- `docs/final/` - Comprehensive End Semester Final Report (`Secure_Software_Engineering_Final_Report.docx`)
+## 5. Security & Exam Phase Documentation Index
+
+All documentation deliverables for all 16 phases of the Secure Software Engineering examination are organized in `docs/`:
+
+| Phase | Phase Title & Marks | Primary Documentation Deliverables | Implementation Status |
+|:---:|---|---|:---:|
+| **01** | **Agile Development** [2M] | [`docs/01-agile/`](file:///home/sathvik/sse_project_lab_exam/docs/01-agile/) (Manifesto, Refactoring, Limitations) | **COMPLETE** |
+| **02** | **Requirements Engineering** [4M] | [`docs/02-requirements/`](file:///home/sathvik/sse_project_lab_exam/docs/02-requirements/) (SRS, FR/NFR, CIA Classification) | **COMPLETE** |
+| **03** | **UML Modeling** [4M] | [`docs/03-uml/`](file:///home/sathvik/sse_project_lab_exam/docs/03-uml/) (Use Cases, Sequence, Analysis Models) | **COMPLETE** |
+| **04** | **Data Flow Modeling** [4M] | [`docs/04-data-flow/`](file:///home/sathvik/sse_project_lab_exam/docs/04-data-flow/) (DFD 0/1, ER Diagram, Trust Boundaries) | **COMPLETE** |
+| **05** | **Architecture Design** [4M] | [`docs/05-architecture/`](file:///home/sathvik/sse_project_lab_exam/docs/05-architecture/) (Layered Arch, Components, Design Patterns) | **COMPLETE** |
+| **06** | **UI/UX Design** [3M] | [`docs/06-ui/`](file:///home/sathvik/sse_project_lab_exam/docs/06-ui/) (Wireframes, Defense-in-Depth UI Rationale) | **COMPLETE** |
+| **07** | **Security Engineering** [4M] | [`docs/07-security/`](file:///home/sathvik/sse_project_lab_exam/docs/07-security/) (STRIDE Threat Model, CIA Matrix, Threat Flows) | **COMPLETE** |
+| **08** | **Attack Trees** [3M] | [`docs/08-attack-tree/`](file:///home/sathvik/sse_project_lab_exam/docs/08-attack-tree/) (Attack Tree Probes, Refined Controls) | **COMPLETE** |
+| **09** | **Product Backlog** [3M] | [`docs/09-backlog/`](file:///home/sathvik/sse_project_lab_exam/docs/09-backlog/) (Jira Stories, Acceptance Criteria) | **COMPLETE** |
+| **10** | **Sprint Metrics** [3M] | [`docs/10-sprint-metrics/`](file:///home/sathvik/sse_project_lab_exam/docs/10-sprint-metrics/) (Burndown, Velocity, Scrum Retrospectives) | **COMPLETE** |
+| **11** | **Secure Build Environment** [4M] | [`docs/11-secure-build/`](file:///home/sathvik/sse_project_lab_exam/docs/11-secure-build/) (SonarQube SAST Report, Quality Gate OK) | **COMPLETE** |
+| **12** | **Secure Coding & Refactoring** [5M] | [`docs/12-secure-coding/`](file:///home/sathvik/sse_project_lab_exam/docs/12-secure-coding/) (Vulnerability Remediation, Before/After) | **COMPLETE** |
+| **13** | **Containerized Development** [7M] | [**Phase 13 Specification**](file:///home/sathvik/sse_project_lab_exam/docs/13-docker-kubernetes/PHASE-13-CONTAINERIZATION.md) (`backend/Dockerfile`, `frontend/Dockerfile`, `k8s/*.yaml`, non-root, PSS Restricted) | **COMPLETE** |
+| **14** | **CI/CD & Security Testing** [7M] | [**Phase 14 Specification**](file:///home/sathvik/sse_project_lab_exam/docs/14-cicd-testing/PHASE-14-CICD-TESTING.md) (`.github/workflows/ci.yml`, 36 Tests, Fuzzing, DEF-001/002) | **COMPLETE** |
+| **15** | **Hardening & Deployment** [5M] | [**Phase 15 Specification**](file:///home/sathvik/sse_project_lab_exam/docs/15-hardening/PHASE-15-HARDENING-DEPLOYMENT.md) (12 Event Types, 5 Alerts, Pre-flight Checklist) | **COMPLETE** |
+| **16** | **Final Capstone Report** [5M] | [`docs/final/`](file:///home/sathvik/sse_project_lab_exam/docs/final/) (`Digital_Wallet_Payment_Gateway_Secure_Software_Engineering_Final_Report.docx` & `.pdf`, Traceability Matrix) | **COMPLETE** |
