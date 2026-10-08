@@ -1,0 +1,16 @@
+<mxfile host="app.diagrams.net" modified="2026-10-08T00:00:00.000Z" agent="Antigravity" version="24.0.0">
+  <diagram id="DWPG-TB" name="DWPG Trust Boundaries">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <!-- Boundary 1: Untrusted Public Zone -->
+        <mxCell id="z_untrusted" value="Untrusted Public Zone (Internet / Browser)" style="rounded=1;strokeColor=#E53E3E;strokeWidth=2;dashed=1;fillColor=#FFF5F5;verticalAlign=top;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="40" y="60" width="340" height="760" as="geometry" /></mxCell>
+        <!-- Boundary 2: DMZ / Ingress Gateway -->
+        <mxCell id="z_dmz" value="DMZ / Ingress Gateway (TLS &amp; Rate Limit)" style="rounded=1;strokeColor=#D69E2E;strokeWidth=2;dashed=1;fillColor=#FFFFF0;verticalAlign=top;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="440" y="60" width="380" height="760" as="geometry" /></mxCell>
+        <!-- Boundary 3: Secure Isolated Backend & DB Tier -->
+        <mxCell id="z_secure" value="Isolated Core Financial Tier (ACID &amp; Row Locks)" style="rounded=1;strokeColor=#2B6CB0;strokeWidth=2;dashed=1;fillColor=#F7FAFC;verticalAlign=top;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="880" y="60" width="460" height="760" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

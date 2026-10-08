@@ -1,0 +1,22 @@
+<mxfile host="app.diagrams.net" modified="2026-10-08T00:00:00.000Z" agent="Antigravity" version="24.0.0">
+  <diagram id="DWPG-DFD-0" name="Context Diagram DFD Level 0">
+    <mxGraphModel dx="1200" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="p0" value="0.0&#xa;Digital Wallet &amp;&#xa;Payment Gateway Simulator" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1A365D;fontColor=#FFFFFF;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="480" y="250" width="240" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="ee_user" value="End User (Student)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#EBF8FF;strokeColor=#3182CE;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="280" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ee_merch" value="Merchant" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FEFCBF;strokeColor=#D69E2E;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="960" y="280" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ee_admin" value="System Administrator" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FED7D7;strokeColor=#E53E3E;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="60" width="160" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

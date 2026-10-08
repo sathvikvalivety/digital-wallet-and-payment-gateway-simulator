@@ -1,0 +1,21 @@
+<mxfile host="app.diagrams.net" modified="2026-10-08T00:00:00.000Z" agent="Antigravity" version="24.0.0">
+  <diagram id="DWPG-DFD-1" name="DFD Level 1 Subsystem Decomposition">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <!-- Processes -->
+        <mxCell id="p1" value="1.0 Auth &amp; Session Management" style="ellipse;whiteSpace=wrap;html=1;fillColor=#BEE3F8;strokeColor=#2B6CB0;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="240" y="100" width="180" height="80" as="geometry" /></mxCell>
+        <mxCell id="p2" value="2.0 Wallet &amp; Concurrency Control" style="ellipse;whiteSpace=wrap;html=1;fillColor=#BEE3F8;strokeColor=#2B6CB0;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="240" y="260" width="180" height="80" as="geometry" /></mxCell>
+        <mxCell id="p3" value="3.0 Payment &amp; Idempotency Engine" style="ellipse;whiteSpace=wrap;html=1;fillColor=#BEE3F8;strokeColor=#2B6CB0;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="600" y="260" width="200" height="80" as="geometry" /></mxCell>
+        <mxCell id="p4" value="4.0 Refund &amp; Reversal Service" style="ellipse;whiteSpace=wrap;html=1;fillColor=#BEE3F8;strokeColor=#2B6CB0;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="600" y="420" width="200" height="80" as="geometry" /></mxCell>
+        <mxCell id="p5" value="5.0 Security Audit &amp; Event Logging" style="ellipse;whiteSpace=wrap;html=1;fillColor=#BEE3F8;strokeColor=#2B6CB0;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="240" y="420" width="190" height="80" as="geometry" /></mxCell>
+        <!-- Data Stores -->
+        <mxCell id="ds1" value="D1: Users Store" style="shape=partialRectangle;fillColor=#EDF2F7;strokeColor=#4A5568;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="470" y="110" width="150" height="40" as="geometry" /></mxCell>
+        <mxCell id="ds2" value="D2: Wallets Store" style="shape=partialRectangle;fillColor=#EDF2F7;strokeColor=#4A5568;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="440" y="360" width="150" height="40" as="geometry" /></mxCell>
+        <mxCell id="ds3" value="D3: Payments &amp; Idempotency" style="shape=partialRectangle;fillColor=#EDF2F7;strokeColor=#4A5568;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="860" y="280" width="180" height="40" as="geometry" /></mxCell>
+        <mxCell id="ds4" value="D4: Audit Logs (Immutable)" style="shape=partialRectangle;fillColor=#EDF2F7;strokeColor=#4A5568;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="440" y="540" width="170" height="40" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
