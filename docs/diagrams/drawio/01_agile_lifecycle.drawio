@@ -1,0 +1,28 @@
+<mxfile host="app.diagrams.net" modified="2026-10-08T12:00:00.000Z" agent="Antigravity" version="24.0.0">
+  <diagram id="DWPG-01_agile_lifecycle" name="Agile Development Lifecycle">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_banner" value="DIGITAL WALLET &amp; PAYMENT GATEWAY SIMULATOR | AGILE SECURE SOFTWARE ENGINEERING LIFECYCLE" style="shape=rect;fillColor=#1E3A8A;fontColor=#FFFFFF;fontStyle=1;fontSize=14;rounded=1;" vertex="1" parent="1"><mxGeometry x="60" y="20" width="1280" height="40" as="geometry" /></mxCell>
+        <mxCell id="p1" value="Sprint 1: Architecture &amp; MVP&#xa;• Epics DWPG-1..3&#xa;• User/Merchant Auth&#xa;• Wallet Top-Up&#xa;• 26 SP Committed" style="rounded=1;fillColor=#DBEAFE;strokeColor=#1D4ED8;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="80" y="100" width="260" height="95" as="geometry" /></mxCell>
+        <mxCell id="p2" value="Sprint 1 Execution&#xa;• Sprint Backlog DWPG-10..14&#xa;• REST Endpoints Built&#xa;• In-Memory Ledger&#xa;• 21 SP Completed" style="rounded=1;fillColor=#EFF6FF;strokeColor=#2563EB;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="380" y="100" width="260" height="95" as="geometry" /></mxCell>
+        <mxCell id="p3" value="Discovery &amp; Retrospective&#xa;• Concurrency Stress Test&#xa;• Defect DEF-001 Logged:&#xa;  Race Condition &amp; Double Spend&#xa;• 5 SP Carried Over" style="rounded=1;fillColor=#FEE2E2;strokeColor=#DC2626;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="680" y="100" width="260" height="95" as="geometry" /></mxCell>
+        <mxCell id="p4" value="Sprint 2: Hardening Scope&#xa;• Epics DWPG-4..7&#xa;• SELECT FOR UPDATE Row Locks&#xa;• Idempotency Token Engine&#xa;• 26 SP Committed" style="rounded=1;fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="980" y="100" width="260" height="95" as="geometry" /></mxCell>
+        <mxCell id="p5" value="Sprint 2 Refactoring&#xa;• Pessimistic Locking Query&#xa;• SHA-256 Payload Hash Binding&#xa;• State Machine Refunds&#xa;• 26 SP Delivered (100%)" style="rounded=1;fillColor=#D1FAE5;strokeColor=#059669;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="980" y="260" width="260" height="95" as="geometry" /></mxCell>
+        <mxCell id="p6" value="Containerization &amp; K8s&#xa;• Multi-Stage Dockerfile (Alpine)&#xa;• UID 10001 Non-Root User&#xa;• Minikube Namespace dwpg&#xa;• NetworkPolicy Isolation" style="rounded=1;fillColor=#E0E7FF;strokeColor=#4338CA;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="680" y="260" width="260" height="95" as="geometry" /></mxCell>
+        <mxCell id="p7" value="DevSecOps &amp; SAST Pipeline&#xa;• SonarQube LTS Quality Gate&#xa;• Zero Bugs, Zero Vulns&#xa;• 42 Automated Security Tests&#xa;• 62.6% Code Coverage" style="rounded=1;fillColor=#CCFBF1;strokeColor=#0D9488;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="380" y="260" width="260" height="95" as="geometry" /></mxCell>
+        <mxCell id="p8" value="Academic Capstone Review&#xa;• 16 Exam Phases Verified&#xa;• 24 Draw.io Source Diagrams&#xa;• Master Report Published&#xa;• Remote Git Synchronized" style="rounded=1;fillColor=#F3E8FF;strokeColor=#7E22CE;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="80" y="260" width="260" height="95" as="geometry" /></mxCell>
+        <mxCell id="e1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="p1" target="p2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="p2" target="p3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="p3" target="p4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="p4" target="p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="p5" target="p6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="p6" target="p7"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="p7" target="p8"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="summary" value="SCRUM SUMMARY: 2 Sprints | 16 Epics &amp; Stories | 47 Total SP Delivered | Velocity: 21 SP (S1) -&gt; 26 SP (S2) | Defect Density: 0.02/SP" style="rounded=1;fillColor=#F8FAFC;strokeColor=#64748B;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="80" y="390" width="1160" height="45" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,33 @@
+<mxfile host="app.diagrams.net" modified="2026-10-08T12:00:00.000Z" agent="Antigravity" version="24.0.0">
+  <diagram id="DWPG-12_auth_sequence" name="Authentication Sequence Diagram">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_banner" value="DIGITAL WALLET &amp; PAYMENT GATEWAY SIMULATOR | AUTHENTICATION &amp; JWT ISSUANCE SEQUENCE" style="shape=rect;fillColor=#1E3A8A;fontColor=#FFFFFF;fontStyle=1;fontSize=14;rounded=1;" vertex="1" parent="1"><mxGeometry x="60" y="20" width="1280" height="40" as="geometry" /></mxCell>
+        <mxCell id="c" value="Client (React UI)" style="rounded=1;fillColor=#DBEAFE;strokeColor=#1D4ED8;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="80" y="80" width="160" height="40" as="geometry" /></mxCell>
+        <mxCell id="line_c" value="" style="shape=rect;fillColor=#CBD5E1;strokeColor=none;" vertex="1" parent="1"><mxGeometry x="155" y="120" width="10" height="380" as="geometry" /></mxCell>
+        <mxCell id="ac" value="AuthController" style="rounded=1;fillColor=#DBEAFE;strokeColor=#1D4ED8;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="280" y="80" width="160" height="40" as="geometry" /></mxCell>
+        <mxCell id="line_ac" value="" style="shape=rect;fillColor=#CBD5E1;strokeColor=none;" vertex="1" parent="1"><mxGeometry x="355" y="120" width="10" height="380" as="geometry" /></mxCell>
+        <mxCell id="as" value="AuthService" style="rounded=1;fillColor=#DBEAFE;strokeColor=#1D4ED8;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="480" y="80" width="160" height="40" as="geometry" /></mxCell>
+        <mxCell id="line_as" value="" style="shape=rect;fillColor=#CBD5E1;strokeColor=none;" vertex="1" parent="1"><mxGeometry x="555" y="120" width="10" height="380" as="geometry" /></mxCell>
+        <mxCell id="ur" value="UserRepository" style="rounded=1;fillColor=#DBEAFE;strokeColor=#1D4ED8;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="680" y="80" width="160" height="40" as="geometry" /></mxCell>
+        <mxCell id="line_ur" value="" style="shape=rect;fillColor=#CBD5E1;strokeColor=none;" vertex="1" parent="1"><mxGeometry x="755" y="120" width="10" height="380" as="geometry" /></mxCell>
+        <mxCell id="pe" value="PasswordEncoder (BCrypt)" style="rounded=1;fillColor=#DBEAFE;strokeColor=#1D4ED8;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="880" y="80" width="160" height="40" as="geometry" /></mxCell>
+        <mxCell id="line_pe" value="" style="shape=rect;fillColor=#CBD5E1;strokeColor=none;" vertex="1" parent="1"><mxGeometry x="955" y="120" width="10" height="380" as="geometry" /></mxCell>
+        <mxCell id="jp" value="JwtTokenProvider" style="rounded=1;fillColor=#DBEAFE;strokeColor=#1D4ED8;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="1080" y="80" width="160" height="40" as="geometry" /></mxCell>
+        <mxCell id="line_jp" value="" style="shape=rect;fillColor=#CBD5E1;strokeColor=none;" vertex="1" parent="1"><mxGeometry x="1155" y="120" width="10" height="380" as="geometry" /></mxCell>
+        <mxCell id="s1" value="1. POST /api/auth/login {user, pass}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="c" target="ac"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="s2" value="2. login(request, clientIp)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="ac" target="as"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="s3" value="3. findByUsername(user)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="as" target="ur"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="s4" value="4. return User Entity" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="ur" target="as"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="s5" value="5. matches(rawPassword, hash)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="as" target="pe"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="s6" value="6. true (BCrypt verified)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="pe" target="as"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="s7" value="7. generateToken(username, role)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="as" target="jp"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="s8" value="8. signed HMAC-SHA256 JWT" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="jp" target="as"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="s9" value="9. HTTP 200 OK {token, walletId}" style="strokeColor=#059669;strokeWidth=2;dashed=1;" edge="1" parent="1" source="as" target="c"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,24 @@
+<mxfile host="app.diagrams.net" modified="2026-10-08T12:00:00.000Z" agent="Antigravity" version="24.0.0">
+  <diagram id="DWPG-22_cicd_pipeline" name="CI/CD Pipeline">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_banner" value="DIGITAL WALLET &amp; PAYMENT GATEWAY SIMULATOR | DEVSECOPS CI/CD PIPELINE (GITHUB ACTIONS &amp; QUALITY GATES)" style="shape=rect;fillColor=#1E3A8A;fontColor=#FFFFFF;fontStyle=1;fontSize=14;rounded=1;" vertex="1" parent="1"><mxGeometry x="60" y="20" width="1280" height="40" as="geometry" /></mxCell>
+        <mxCell id="c1" value="1. Source Checkout&#xa;• git clone&#xa;• Branch: main&#xa;• Setup JDK 21" style="rounded=1;fillColor=#EFF6FF;strokeColor=#1D4ED8;fontStyle=1;fontSize=10;" vertex="1" parent="1"><mxGeometry x="80" y="120" width="180" height="80" as="geometry" /></mxCell>
+        <mxCell id="c2" value="2. Build &amp; Test&#xa;• mvn clean test&#xa;• 25 JUnit 5 Tests&#xa;• Concurrency Stress" style="rounded=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontStyle=1;fontSize=10;" vertex="1" parent="1"><mxGeometry x="280" y="120" width="180" height="80" as="geometry" /></mxCell>
+        <mxCell id="c3" value="3. Code Coverage&#xa;• JaCoCo Agent&#xa;• Coverage: 62.6%&#xa;• Coverage XML export" style="rounded=1;fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;fontSize=10;" vertex="1" parent="1"><mxGeometry x="480" y="120" width="180" height="80" as="geometry" /></mxCell>
+        <mxCell id="c4" value="4. SonarQube SAST&#xa;• SonarScanner Maven&#xa;• 0 Vulnerabilities&#xa;• Quality Gate = OK" style="rounded=1;fillColor=#D1FAE5;strokeColor=#059669;fontStyle=1;fontSize=10;" vertex="1" parent="1"><mxGeometry x="680" y="120" width="180" height="80" as="geometry" /></mxCell>
+        <mxCell id="c5" value="5. Container Build&#xa;• Multi-Stage Docker&#xa;• Trivy Scan&#xa;• Non-root Verification" style="rounded=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontStyle=1;fontSize=10;" vertex="1" parent="1"><mxGeometry x="880" y="120" width="180" height="80" as="geometry" /></mxCell>
+        <mxCell id="c6" value="6. K8s Manifest Lint&#xa;• Kubeconform&#xa;• kubectl apply -f k8s/&#xa;• dwpg namespace" style="rounded=1;fillColor=#CCFBF1;strokeColor=#0D9488;fontStyle=1;fontSize=10;" vertex="1" parent="1"><mxGeometry x="1080" y="120" width="160" height="80" as="geometry" /></mxCell>
+        <mxCell id="ce1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="c1" target="c2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ce2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="c2" target="c3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ce3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="c3" target="c4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ce4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="c4" target="c5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ce5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="c5" target="c6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="g_qg" value="SECURITY QUALITY GATE: Zero Blocker/Critical Defects | Coverage &gt;= 60% | Pass All Fuzz Probes" style="rounded=1;fillColor=#F0FDF4;strokeColor=#16A34A;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="80" y="260" width="1160" height="50" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

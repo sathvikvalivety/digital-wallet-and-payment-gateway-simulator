@@ -1,0 +1,35 @@
+<mxfile host="app.diagrams.net" modified="2026-10-08T12:00:00.000Z" agent="Antigravity" version="24.0.0">
+  <diagram id="DWPG-07_dfd_level1" name="DFD Level 1 Decomposition">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_banner" value="DIGITAL WALLET &amp; PAYMENT GATEWAY SIMULATOR | DATA FLOW DIAGRAM (DFD LEVEL 1 - SUBSYSTEM DECOMPOSITION)" style="shape=rect;fillColor=#1E3A8A;fontColor=#FFFFFF;fontStyle=1;fontSize=14;rounded=1;" vertex="1" parent="1"><mxGeometry x="60" y="20" width="1280" height="40" as="geometry" /></mxCell>
+        <mxCell id="ee_u" value="User" style="fillColor=#DBEAFE;strokeColor=#1D4ED8;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="60" y="120" width="120" height="60" as="geometry" /></mxCell>
+        <mxCell id="ee_m" value="Merchant" style="fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="60" y="360" width="120" height="60" as="geometry" /></mxCell>
+        <mxCell id="p1" value="1.0&#xa;Auth &amp;amp; Session&#xa;Management" style="shape=ellipse;fillColor=#EFF6FF;strokeColor=#2563EB;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="240" y="110" width="180" height="80" as="geometry" /></mxCell>
+        <mxCell id="p2" value="2.0&#xa;Wallet &amp;amp; Concurrency&#xa;Control" style="shape=ellipse;fillColor=#EFF6FF;strokeColor=#2563EB;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="500" y="110" width="190" height="80" as="geometry" /></mxCell>
+        <mxCell id="p3" value="3.0&#xa;Payment Settlement&#xa;&amp;amp; Idempotency Gate" style="shape=ellipse;fillColor=#EFF6FF;strokeColor=#2563EB;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="770" y="110" width="200" height="80" as="geometry" /></mxCell>
+        <mxCell id="p4" value="4.0&#xa;Refund &amp;amp; State&#xa;Reversal Engine" style="shape=ellipse;fillColor=#EFF6FF;strokeColor=#2563EB;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="770" y="350" width="200" height="80" as="geometry" /></mxCell>
+        <mxCell id="p5" value="5.0&#xa;Audit Logging &amp;amp;&#xa;Forensics Collector" style="shape=ellipse;fillColor=#EFF6FF;strokeColor=#2563EB;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="500" y="350" width="190" height="80" as="geometry" /></mxCell>
+        <mxCell id="ds1" value="D1: Users DB (BCrypt Hashed)" style="shape=partialRectangle;fillColor=#F8FAFC;strokeColor=#475569;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="240" y="250" width="180" height="40" as="geometry" /></mxCell>
+        <mxCell id="ds2" value="D2: Wallets DB (Balance Row)" style="shape=partialRectangle;fillColor=#F8FAFC;strokeColor=#475569;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="500" y="250" width="190" height="40" as="geometry" /></mxCell>
+        <mxCell id="ds3" value="D3: Idempotency Cache (SHA-256)" style="shape=partialRectangle;fillColor=#F8FAFC;strokeColor=#475569;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="770" y="250" width="200" height="40" as="geometry" /></mxCell>
+        <mxCell id="ds4" value="D4: Audit Ledger (Immutable)" style="shape=partialRectangle;fillColor=#F8FAFC;strokeColor=#475569;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="500" y="480" width="190" height="40" as="geometry" /></mxCell>
+        <mxCell id="df1" value="Login Req" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="ee_u" target="p1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="df2" value="Verify Hash" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="p1" target="ds1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="df3" value="Top-Up Req" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="ee_u" target="p2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="df4" value="Pessimistic Write" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="p2" target="ds2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="df5" value="Pay Req + Key" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="ee_u" target="p3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="df6" value="Check/Store Key" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="p3" target="ds3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="df7" value="Debit &amp; Credit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="p3" target="ds2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="df8" value="Refund Req" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="ee_m" target="p4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="df9" value="Reverse Funds" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="p4" target="ds2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="df10" value="Payment Event" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="p3" target="p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="df11" value="Refund Event" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="p4" target="p5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="df12" value="Append Log" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="p5" target="ds4"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

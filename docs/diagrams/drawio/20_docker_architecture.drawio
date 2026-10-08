@@ -1,0 +1,16 @@
+<mxfile host="app.diagrams.net" modified="2026-10-08T12:00:00.000Z" agent="Antigravity" version="24.0.0">
+  <diagram id="DWPG-20_docker_architecture" name="Docker Architecture">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_banner" value="DIGITAL WALLET &amp; PAYMENT GATEWAY SIMULATOR | MULTI-STAGE DOCKER ARCHITECTURE &amp; LEAST-PRIVILEGE HARDENING" style="shape=rect;fillColor=#1E3A8A;fontColor=#FFFFFF;fontStyle=1;fontSize=14;rounded=1;" vertex="1" parent="1"><mxGeometry x="60" y="20" width="1280" height="40" as="geometry" /></mxCell>
+        <mxCell id="stg1" value="STAGE 1: MAVEN BUILD ENVIRONMENT&#xa;&#xa;• Base Image: maven:3.9.6-eclipse-temurin-21&#xa;• Dependencies cached via pom.xml copy&#xa;• Source compilation &amp; JUnit 5 test execution&#xa;• JaCoCo coverage agent instrumentation&#xa;• Artifact Generated: dwpg-simulator-1.0.0.jar&#xa;• Build tools and source code discarded" style="rounded=1;fillColor=#EFF6FF;strokeColor=#1D4ED8;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="80" y="90" width="480" height="220" as="geometry" /></mxCell>
+        <mxCell id="stg2" value="STAGE 2: HARDENED PRODUCTION RUNTIME&#xa;&#xa;• Base Image: eclipse-temurin:21-jre-alpine&#xa;• Attack Surface: Minimal (Zero package managers/compilers)&#xa;• Minimal Size: ~180MB footprint&#xa;• Non-Root Execution: User UID 10001 (dwpgapp)&#xa;• Read-Only Root Filesystem: read_only: true&#xa;• Linux Capabilities Dropped: cap_drop: ALL&#xa;• Exposed Port: 8080 (unprivileged)" style="rounded=1;fillColor=#D1FAE5;strokeColor=#059669;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="660" y="90" width="480" height="220" as="geometry" /></mxCell>
+        <mxCell id="ed_stg" value="COPY --from=builder dwpg-simulator.jar" style="strokeColor=#059669;strokeWidth=3;" edge="1" parent="1" source="stg1" target="stg2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="d_sec" value="RUNTIME SECURITY SAFEGUARDS VERIFIED&#xa;&#xa;1. Zero Root Privilege: Application cannot modify OS binaries or install malware.&#xa;2. Container Escape Prevention: Dropped capabilities block kernel exploitation.&#xa;3. Secret Protection: Zero hardcoded credentials in Dockerfile; injected via environment at runtime." style="rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="80" y="350" width="1060" height="110" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

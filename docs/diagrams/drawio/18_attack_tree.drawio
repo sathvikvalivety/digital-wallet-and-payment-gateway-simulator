@@ -1,0 +1,37 @@
+<mxfile host="app.diagrams.net" modified="2026-10-08T12:00:00.000Z" agent="Antigravity" version="24.0.0">
+  <diagram id="DWPG-18_attack_tree" name="Attack Tree">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_banner" value="DIGITAL WALLET &amp; PAYMENT GATEWAY SIMULATOR | COMPREHENSIVE ATTACK TREE &amp; MITIGATION ARCHITECTURE" style="shape=rect;fillColor=#1E3A8A;fontColor=#FFFFFF;fontStyle=1;fontSize=14;rounded=1;" vertex="1" parent="1"><mxGeometry x="60" y="20" width="1280" height="40" as="geometry" /></mxCell>
+        <mxCell id="root" value="GOAL: Compromise Digital Wallet System&#xa;(Illicit Funds Theft / Ledger Distortion)" style="rounded=1;fillColor=#1E3A8A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="460" y="80" width="440" height="60" as="geometry" /></mxCell>
+        <mxCell id="b1" value="SUB-GOAL 1: Double Spending&#xa;via Concurrency Race" style="rounded=1;fillColor=#FEE2E2;strokeColor=#DC2626;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="80" y="180" width="260" height="65" as="geometry" /></mxCell>
+        <mxCell id="b2" value="SUB-GOAL 2: Replay Attack&#xa;on Payment API" style="rounded=1;fillColor=#FEE2E2;strokeColor=#DC2626;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="380" y="180" width="260" height="65" as="geometry" /></mxCell>
+        <mxCell id="b3" value="SUB-GOAL 3: In-Flight&#xa;Payload Tampering" style="rounded=1;fillColor=#FEE2E2;strokeColor=#DC2626;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="680" y="180" width="260" height="65" as="geometry" /></mxCell>
+        <mxCell id="b4" value="SUB-GOAL 4: Cross-User&#xa;Account Takeover / BOLA" style="rounded=1;fillColor=#FEE2E2;strokeColor=#DC2626;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="980" y="180" width="260" height="65" as="geometry" /></mxCell>
+        <mxCell id="l1" value="Attack: Blast 10 concurrent&#xa;$50 debits on $100 wallet" style="rounded=1;fillColor=#FEF2F2;strokeColor=#EF4444;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="80" y="280" width="260" height="65" as="geometry" /></mxCell>
+        <mxCell id="l2" value="Attack: Resend captured&#xa;POST /payments request" style="rounded=1;fillColor=#FEF2F2;strokeColor=#EF4444;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="380" y="280" width="260" height="65" as="geometry" /></mxCell>
+        <mxCell id="l3" value="Attack: Alter merchantId or&#xa;amount using same key" style="rounded=1;fillColor=#FEF2F2;strokeColor=#EF4444;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="680" y="280" width="260" height="65" as="geometry" /></mxCell>
+        <mxCell id="l4" value="Attack: Access foreign walletId&#xa;via manipulated REST parameter" style="rounded=1;fillColor=#FEF2F2;strokeColor=#EF4444;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="980" y="280" width="260" height="65" as="geometry" /></mxCell>
+        <mxCell id="m1" value="MITIGATION:&#xa;SELECT FOR UPDATE Row Locking&#xa;(Guarantees exactly 2 debits; 8 denied)" style="rounded=1;fillColor=#DCFCE7;strokeColor=#15803D;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="80" y="380" width="260" height="80" as="geometry" /></mxCell>
+        <mxCell id="m2" value="MITIGATION:&#xa;Idempotency Cache&#xa;(Returns cached response without debit)" style="rounded=1;fillColor=#DCFCE7;strokeColor=#15803D;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="380" y="380" width="260" height="80" as="geometry" /></mxCell>
+        <mxCell id="m3" value="MITIGATION:&#xa;SHA-256 Payload Hash Binding&#xa;(Returns HTTP 409 Conflict)" style="rounded=1;fillColor=#DCFCE7;strokeColor=#15803D;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="680" y="380" width="260" height="80" as="geometry" /></mxCell>
+        <mxCell id="m4" value="MITIGATION:&#xa;BOLA Security Ownership Check&#xa;(Returns HTTP 403 Forbidden)" style="rounded=1;fillColor=#DCFCE7;strokeColor=#15803D;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="980" y="380" width="260" height="80" as="geometry" /></mxCell>
+        <mxCell id="ae1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="root" target="b1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ae2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="root" target="b2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ae3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="root" target="b3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ae4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="root" target="b4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ae5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="b1" target="l1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ae6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="b2" target="l2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ae7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="b3" target="l3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ae8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="b4" target="l4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ae9" value="Blocked By" style="strokeColor=#15803D;dashed=1;" edge="1" parent="1" source="l1" target="m1"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ae10" value="Blocked By" style="strokeColor=#15803D;dashed=1;" edge="1" parent="1" source="l2" target="m2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ae11" value="Blocked By" style="strokeColor=#15803D;dashed=1;" edge="1" parent="1" source="l3" target="m3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="ae12" value="Blocked By" style="strokeColor=#15803D;dashed=1;" edge="1" parent="1" source="l4" target="m4"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,21 @@
+<mxfile host="app.diagrams.net" modified="2026-10-08T12:00:00.000Z" agent="Antigravity" version="24.0.0">
+  <diagram id="DWPG-19_security_architecture" name="Security Architecture Refinement">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_banner" value="DIGITAL WALLET &amp; PAYMENT GATEWAY SIMULATOR | SECURITY-REFINED MULTI-TIER ARCHITECTURE" style="shape=rect;fillColor=#1E3A8A;fontColor=#FFFFFF;fontStyle=1;fontSize=14;rounded=1;" vertex="1" parent="1"><mxGeometry x="60" y="20" width="1280" height="40" as="geometry" /></mxCell>
+        <mxCell id="t1" value="PERIMETER TIER: Ingress &amp; Transport Hardening&#xa;• TLS 1.3 Transport Encryption | Nginx Reverse Proxy&#xa;• Non-Root Container Execution (UID 10001) | Read-Only Root Filesystem&#xa;• CORS Whitelist &amp; Strict Content-Security-Policy (CSP)" style="rounded=1;fillColor=#EFF6FF;strokeColor=#1D4ED8;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="80" y="80" width="1200" height="70" as="geometry" /></mxCell>
+        <mxCell id="t2" value="AUTHENTICATION &amp; ACCESS CONTROL TIER: Zero-Trust Identity&#xa;• BCrypt Cost Factor 12 Password Hashing&#xa;• Stateless HMAC-SHA256 JWT Bearer Tokens with Expiry Claims&#xa;• Spring Security @PreAuthorize RBAC (ROLE_USER, ROLE_MERCHANT, ROLE_ADMIN)" style="rounded=1;fillColor=#ECFDF5;strokeColor=#059669;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="80" y="170" width="1200" height="70" as="geometry" /></mxCell>
+        <mxCell id="t3" value="INTEGRITY &amp; IDEMPOTENCY TIER: Anti-Tamper &amp; Anti-Replay Engine&#xa;• Mandatory Idempotency-Key HTTP Header Gate&#xa;• SHA-256 Request Payload Cryptographic Binding&#xa;• State Machine Enforced Reversal Transitions (CONFIRMED -&gt; REFUNDED)" style="rounded=1;fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="80" y="260" width="1200" height="70" as="geometry" /></mxCell>
+        <mxCell id="t4" value="CONCURRENCY &amp; DATA CONSISTENCY TIER: Transactional Locking&#xa;• Pessimistic Row-Level Write Locks (SELECT FOR UPDATE)&#xa;• Strict READ_COMMITTED Database Isolation&#xa;• Database-Level CHECK Constraints: CHECK (balance &gt;= 0)" style="rounded=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="80" y="350" width="1200" height="70" as="geometry" /></mxCell>
+        <mxCell id="t5" value="AUDITABILITY &amp; COMPLIANCE TIER: Immutable Forensic Logging&#xa;• Append-Only Audit Trail in MariaDB Ledger&#xa;• Automated PII Regex Scrubbing (Masking Passwords and Tokens)&#xa;• SIEM-Ready Structured JSON Event Logging" style="rounded=1;fillColor=#FEF2F2;strokeColor=#DC2626;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="80" y="440" width="1200" height="70" as="geometry" /></mxCell>
+        <mxCell id="te1" value="Filtered Traffic" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="t1" target="t2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="te2" value="Authenticated Claims" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="t2" target="t3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="te3" value="Integrity Checked Orders" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="t3" target="t4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="te4" value="State Transition Events" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="t4" target="t5"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

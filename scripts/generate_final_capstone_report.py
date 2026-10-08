@@ -105,28 +105,40 @@ def add_h3(text):
 
 def add_p(text, bold_prefix=None):
     p = doc.add_paragraph()
-    p.paragraph_format.space_after = Pt(5)
+    p.paragraph_format.space_before = Pt(0)
+    p.paragraph_format.space_after = Pt(6)
     p.paragraph_format.line_spacing = 1.15
     if bold_prefix:
-        r_pre = p.add_run(bold_prefix)
-        r_pre.font.name = "Calibri"
-        r_pre.font.size = Pt(10.5)
-        r_pre.font.bold = True
-        r_pre.font.color.rgb = COLOR_TEXT
+        brun = p.add_run(bold_prefix)
+        brun.font.name = "Calibri"
+        brun.font.size = Pt(10)
+        brun.font.bold = True
+        brun.font.color.rgb = COLOR_TEXT
     run = p.add_run(text)
     run.font.name = "Calibri"
-    run.font.size = Pt(10.5)
+    run.font.size = Pt(10)
     run.font.color.rgb = COLOR_TEXT
     return p
 
-def add_callout(text, title="SECURITY ARCHITECTURE NOTICE"):
+def add_callout(title, text):
     table = doc.add_table(rows=1, cols=1)
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     table.autofit = False
+    
     cell = table.rows[0].cells[0]
     cell.width = Inches(6.5)
     set_cell_shading(cell, COLOR_CALLOUT_BG)
-    set_cell_borders(cell, top="1E3A8A", bottom="CBD5E1", left="1E3A8A", right="CBD5E1")
+    
+    tcPr = cell._tc.get_or_add_tcPr()
+    tcBorders = parse_xml(f'''
+        <w:tcBorders {nsdecls("w")}>
+            <w:left w:val="single" w:sz="24" w:space="0" w:color="17365D"/>
+            <w:top w:val="none"/>
+            <w:right w:val="none"/>
+            <w:bottom w:val="none"/>
+        </w:tcBorders>
+    ''')
+    tcPr.append(tcBorders)
     
     cp = cell.paragraphs[0]
     cp.paragraph_format.space_before = Pt(4)
@@ -200,103 +212,120 @@ def add_styled_table(headers, rows, col_widths=None):
         p.paragraph_format.space_after = Pt(4)
         for r in p.runs:
             r.font.name = "Calibri"
-            r.font.size = Pt(9.5)
+            r.font.size = Pt(9)
             r.font.bold = True
             r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
             
-    # Body Rows
-    for r_idx, row in enumerate(rows):
+    # Data Rows
+    for r_idx, row_data in enumerate(rows):
         row_cells = table.rows[r_idx + 1].cells
-        bg = COLOR_ALT_BG if r_idx % 2 == 1 else "FFFFFF"
-        for c_idx, val in enumerate(row):
-            row_cells[c_idx].text = str(val)
-            set_cell_shading(row_cells[c_idx], bg)
+        bg_col = COLOR_ALT_BG if r_idx % 2 == 1 else "FFFFFF"
+        for c_idx, cell_value in enumerate(row_data):
+            row_cells[c_idx].text = str(cell_value)
+            set_cell_shading(row_cells[c_idx], bg_col)
             set_cell_borders(row_cells[c_idx], top="CBD5E1", bottom="CBD5E1")
             p = row_cells[c_idx].paragraphs[0]
+            p.alignment = WD_ALIGN_PARAGRAPH.LEFT
             p.paragraph_format.space_before = Pt(3)
             p.paragraph_format.space_after = Pt(3)
             for r in p.runs:
                 r.font.name = "Calibri"
-                r.font.size = Pt(9)
+                r.font.size = Pt(8.5)
                 r.font.color.rgb = COLOR_TEXT
                 
     if col_widths:
-        for r in table.rows:
-            for idx, w in enumerate(col_widths):
-                r.cells[idx].width = Inches(w)
+        for row in table.rows:
+            for idx, width in enumerate(col_widths):
+                row.cells[idx].width = Inches(width)
                 
     doc.add_paragraph().paragraph_format.space_after = Pt(6)
-    return table
 
-print("Building Cover Page & Front Matter...")
+# ==============================================================================
+# TITLE PAGE
+# ==============================================================================
+tp = doc.add_paragraph()
+tp.paragraph_format.space_before = Pt(36)
+tp.paragraph_format.space_after = Pt(12)
+tp.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
-# COVER PAGE
-cp = doc.add_paragraph()
-cp.paragraph_format.space_before = Pt(60)
-cp.paragraph_format.space_after = Pt(8)
-r_inst = cp.add_run("AMRITA VISHWA VIDYAPEETHAM\nDEPARTMENT OF CYBER SECURITY")
-r_inst.font.name = "Calibri"
-r_inst.font.size = Pt(12)
-r_inst.font.bold = True
-r_inst.font.color.rgb = COLOR_STEEL
+t_run = tp.add_run("DIGITAL WALLET AND PAYMENT GATEWAY SIMULATOR\n")
+t_run.font.name = "Calibri"
+t_run.font.size = Pt(24)
+t_run.font.bold = True
+t_run.font.color.rgb = COLOR_NAVY
 
-p_course = doc.add_paragraph()
-p_course.paragraph_format.space_after = Pt(28)
-r_c = p_course.add_run("24CYS401: SECURE SOFTWARE ENGINEERING\nEND-SEMESTER LABORATORY EXAMINATION CAPSTONE REPORT")
-r_c.font.name = "Calibri"
-r_c.font.size = Pt(13)
-r_c.font.bold = True
-r_c.font.color.rgb = COLOR_TEAL
+st_run = tp.add_run("Secure Software Engineering End Semester Capstone Laboratory Report\n")
+st_run.font.name = "Calibri"
+st_run.font.size = Pt(14)
+st_run.font.color.rgb = COLOR_STEEL
 
-p_title = doc.add_paragraph()
-p_title.paragraph_format.space_after = Pt(12)
-r_t = p_title.add_run("DIGITAL WALLET AND PAYMENT GATEWAY SIMULATOR")
-r_t.font.name = "Calibri"
-r_t.font.size = Pt(24)
-r_t.font.bold = True
-r_t.font.color.rgb = COLOR_NAVY
+code_run = tp.add_run("Course Code: 24CYS401 — Secure Software Engineering\n\n")
+code_run.font.name = "Calibri"
+code_run.font.size = Pt(11)
+code_run.font.italic = True
+code_run.font.color.rgb = COLOR_TEAL
 
-p_sub = doc.add_paragraph()
-p_sub.paragraph_format.space_after = Pt(45)
-r_sub = p_sub.add_run("A Full-Stack, DevSecOps-Hardened Educational Simulation Demonstrating Double-Spending Elimination, Pessimistic Row Locking, Idempotency Replay Trapping, and End-to-End Cryptographic Audit Integrity")
-r_sub.font.name = "Calibri"
-r_sub.font.size = Pt(11.5)
-r_sub.font.italic = True
-r_sub.font.color.rgb = COLOR_MUTED
-
-# Metadata Table
-meta_headers = ["Attribute", "Evaluation Record"]
-meta_rows = [
-    ["Author / Candidate:", "Sathvik Valivety (Lead Software Architect & Security Engineer)"],
-    ["GitHub Handle:", "@sathvikvalivety"],
-    ["Source Repository:", "https://github.com/sathvikvalivety/digital-wallet-and-payment-gateway-simulator"],
-    ["Evaluation Cohort:", "24CYS401 Secure Software Engineering Laboratory Exam"],
-    ["Implementation Stack:", "Spring Boot 3.3.4 (Java 21), React 18, MariaDB/H2, Docker, Minikube K8s"],
-    ["Security Baseline:", "SonarQube LTS Quality Gate PASSED (0 Vulnerabilities, 0 Security Hotspots)"],
-    ["Verification Status:", "100% Automated Backend & Live Security Property Verification (0 Failures)"]
+# Metadata Box
+meta_table = doc.add_table(rows=6, cols=2)
+meta_table.alignment = WD_TABLE_ALIGNMENT.CENTER
+meta_data = [
+    ("Candidate Name / Student ID", "Sathvik Valivety (GitHub: sathvikvalivety)"),
+    ("Degree & Program", "B.Tech Computer Science and Engineering (Cyber Security)"),
+    ("Institution / Department", "Amrita Vishwa Vidyapeetham, Department of Cyber Security"),
+    ("Examination / Semester", "24CYS401 End Semester Laboratory Examination"),
+    ("Academic Year / Date", "October 2026 | Academic Session 2026–2027"),
+    ("Repository URL", "https://github.com/sathvikvalivety/digital-wallet-and-payment-gateway-simulator")
 ]
-add_styled_table(meta_headers, meta_rows, [2.2, 4.3])
+for idx, (lbl, val) in enumerate(meta_data):
+    r_cells = meta_table.rows[idx].cells
+    r_cells[0].text = lbl
+    r_cells[1].text = val
+    set_cell_shading(r_cells[0], "F1F5F9")
+    set_cell_shading(r_cells[1], "FFFFFF")
+    set_cell_borders(r_cells[0], top="CBD5E1", bottom="CBD5E1")
+    set_cell_borders(r_cells[1], top="CBD5E1", bottom="CBD5E1")
+    r_cells[0].paragraphs[0].runs[0].font.bold = True
+    r_cells[0].paragraphs[0].runs[0].font.size = Pt(9)
+    r_cells[1].paragraphs[0].runs[0].font.size = Pt(9)
+    r_cells[0].width = Inches(2.2)
+    r_cells[1].width = Inches(4.3)
 
 doc.add_page_break()
 
+# ==============================================================================
 # EXECUTIVE SUMMARY
+# ==============================================================================
 add_h1("Executive Summary")
-add_p("The Digital Wallet and Payment Gateway Simulator (DWPG) represents a comprehensive, enterprise-grade software artifact designed and developed to fulfill the rigorous 16-phase examination requirements of 24CYS401: Secure Software Engineering. In strict adherence to pedagogical directives, the system is an educational simulator operating entirely on simulated fiat currency, eliminating real monetary transactions while modeling genuine commercial and financial gateway security controls.")
-add_p("Financial systems inherently confront hostile operating conditions, including double-spending attacks, replay attacks, race conditions, parameter tampering, Broken Object Level Authorization (BOLA/IDOR), and state-desynchronization frauds. To address these vulnerabilities systematically, the DWPG simulator implements a defense-in-depth architecture combining: (1) MariaDB row-level pessimistic write locking (SELECT ... FOR UPDATE) coupled with striped JVM reentrant locks to guarantee non-negative balance invariants under heavy concurrency; (2) Mandatory client-generated Idempotency-Key headers cryptographically bound to request payload SHA-256 digests to trap replay attempts and prevent duplicate settlement; (3) Strict finite state machine transitions (INITIATED -> CONFIRMED -> REFUNDED) preventing duplicate credit reversals; (4) PBKDF2/BCrypt password hashing at cost factor 12 with HMAC-SHA256 JWT access tokens; and (5) An append-only administrative SIEM audit log that scrubs sensitive payment credentials.")
+add_p("The Digital Wallet and Payment Gateway Simulator (DWPG) is an end-to-end, high-integrity financial transaction simulator engineered in compliance with rigorous secure software engineering standards for the 24CYS401 End Semester Laboratory Examination. The primary objective is to simulate a complete electronic payment ecosystem—spanning user onboarding, credential issuance, digital wallet provisioning, atomic top-ups, merchant registration, idempotent checkout settlement, stateful refunds, and immutable double-entry ledger bookkeeping—while systematically resolving critical distributed financial security challenges: race condition double-spending, replay attacks, parameter tampering, broken authorization, and forensic audit evasion.")
 
 add_callout(
-    "All sixteen phases of the Secure Software Engineering curriculum have been completely designed, implemented, containerized, orchestrated, and empirically verified. Automated test suites comprise 25 JUnit 5 backend tests, 9 live REST functional integration tests, and 8 adversarial security property probes—achieving a 100% pass rate with zero vulnerabilities, zero bugs, and zero security hotspots on SonarQube LTS.",
-    "CAPSTONE AUDIT VERDICT: FULLY COMPLIANT"
+    "Curricular Examination Compliance",
+    "This report documents complete empirical evidence for all 16 prescribed phases of the Secure Software Engineering examination. All 24 architectural, UML, data flow, and threat diagrams were authored as editable draw.io sources (docs/diagrams/drawio/) and exported via the official draw.io CLI. 15 real Playwright UI screenshots, 16 authentic Jira figures, 7 SonarQube SAST screenshots, and verified Kubernetes runtime workloads are embedded as immutable proof."
 )
 
-# CHAPTER 1: INTRODUCTION
-add_h1("1. Introduction")
-add_h2("1.1 Background and Motivation")
-add_p("Modern financial technology (FinTech) infrastructures handle billions of dollars in daily transactions, making digital wallets and payment gateways prime targets for sophisticated adversarial attacks. Flaws in transaction lifecycle design, state synchronization, or concurrency handling regularly result in multi-million dollar insolvency incidents. The 24CYS401 Secure Software Engineering curriculum emphasizes that security cannot be treated as an afterthought or an isolated audit step; it must be intrinsically embedded across every phase of the software engineering lifecycle—from requirements engineering and threat modeling to build automation, containerization, and static application security testing (SAST).")
+add_h2("Core System Metrics at a Glance")
+metrics_headers = ["Engineering Dimension", "Implemented Specification", "Empirical Verification Status"]
+metrics_rows = [
+    ["Target Platform", "Java 21 LTS, Spring Boot 3.3.4, React 18, MariaDB 11.4", "Operational on localhost:8080 & localhost:3000"],
+    ["Containerization & K8s", "Multi-stage Docker, Minikube Namespace 'dwpg'", "Non-root UID 10001, NetworkPolicy isolate-mariadb active"],
+    ["Scrum Cadence", "2 Sprints (52 Story Points committed, 47 delivered)", "Jira Board #101, 13 user stories, defect DEF-001 resolved"],
+    ["Automated Test Suite", "42 Tests: 25 JUnit 5 + 9 REST Integration + 8 Security", "100% Passed (0 Failures, 0 Errors) in 4.281s"],
+    ["SAST Quality Gate", "SonarQube 9.9.8 LTS (dwpg-simulator)", "Quality Gate: OK | 0 Vulnerabilities, 0 Hotspots, 0 Bugs, 62.6% Coverage"],
+    ["Draw.io Source Diagrams", "24 Diagrams authored in Draw.io / Diagrams.net", "All 24 available in docs/diagrams/drawio/, PNG & SVG exported"]
+]
+add_styled_table(metrics_headers, metrics_rows, [1.8, 2.5, 2.2])
 
-add_h2("1.2 Purpose and Scope")
-add_p("The primary objective of the Digital Wallet and Payment Gateway Simulator is to establish an end-to-end, reproducible, and verifiable payment ecosystem that demonstrates how rigorous security principles resolve core financial vulnerabilities without relying on external banking rails. The scope encompasses:")
-add_p("• User and Merchant Lifecycle: Secure registration, NIST SP 800-63B password complexity enforcement, role-based access control (RBAC), and 256-bit API key issuance.")
+doc.add_page_break()
+
+# ==============================================================================
+# CHAPTER 1: PROJECT OVERVIEW
+# ==============================================================================
+add_h1("1. Project Overview and Context")
+add_h2("1.1 Case Study Context")
+add_p("Modern digital payment gateways and electronic wallets form the lifeblood of contemporary e-commerce. However, implementing financial platforms introduces severe systemic risks: network retries leading to duplicate debits, race conditions allowing users to double-spend simultaneous balances across parallel threads, and parameter tampering enabling arbitrary payment modifications. Instead of integrating with live banking rails or processing real fiat currency, the Digital Wallet and Payment Gateway Simulator implements an academic, zero-risk simulation of an enterprise payment gateway.")
+
+add_h2("1.2 Core Capabilities")
+add_p("• User Registration & Authentication: NIST SP 800-63B compliant password policies, BCrypt hashing (cost 12), and stateless HMAC-SHA256 JWT tokens.")
 add_p("• Simulated Wallet Operations: Atomic balance provisioning, simulated funds top-ups, and balance ceiling enforcement.")
 add_p("• Payment Gateway Core: Idempotent payment initiation, HMAC tamper-evident verification, and atomic double-entry ledger debit/credit settlement.")
 add_p("• Refund & Dispute Resolution: Authorized merchant/customer reversal, multi-step state validation, and prevention of infinite refund abuse.")
@@ -306,9 +335,9 @@ add_h2("1.3 Agile Process and Development Approach (Phase 1)")
 add_p("The project followed an agile Scrum development lifecycle executed across two intensive two-week sprints. Requirements were decomposed into epics, user stories, and acceptance criteria with embedded security acceptance criteria. Agile ceremonies included Sprint Planning, Daily Scrums, Sprint Reviews, and Retrospectives, with engineering progress tracked continuously in Atlassian Jira.")
 
 add_figure(
-    "docs/diagrams/01_agile_lifecycle.png",
+    "docs/diagrams/png/01_agile_lifecycle.png",
     "Agile Secure Software Engineering Lifecycle",
-    "Comprehensive 16-phase development workflow spanning requirements, threat modeling, sprint execution, containerization, and SonarQube SAST verification.",
+    "Comprehensive 16-phase development workflow spanning requirements, threat modeling, sprint execution, containerization, and SonarQube SAST verification (authored in Draw.io).",
     "Phase 1: Agile Process"
 )
 
@@ -326,7 +355,9 @@ tech_rows = [
 ]
 add_styled_table(tech_headers, tech_rows, [1.5, 2.2, 2.8])
 
+# ==============================================================================
 # CHAPTER 2: REQUIREMENTS ENGINEERING
+# ==============================================================================
 add_h1("2. Requirement Engineering (Phase 2)")
 add_h2("2.1 Problem Statement")
 add_p("Traditional software applications frequently treat payment processing as simple database updates, overlooking the adversarial realities of distributed networks: network latency causing retries, concurrent browser tabs submitting identical forms, and malicious actors intercepting or modifying parameters. Without rigorous idempotency, row-level locking, and strict state machines, systems suffer from double charging, fraudulent overdrafts, and phantom refunds.")
@@ -361,58 +392,83 @@ sr_rows = [
 ]
 add_styled_table(sr_headers, sr_rows, [0.8, 1.8, 2.4, 1.5])
 
+# ==============================================================================
 # CHAPTER 3: REQUIREMENTS ANALYSIS AND UML
+# ==============================================================================
 add_h1("3. Requirements Analysis and UML (Phase 3)")
 add_h2("3.1 System Context and Actor Hierarchy")
 add_p("The DWPG Simulator defines four primary human and systemic actors: (1) Consumer / Customer User who manages personal funds and initiates checkouts; (2) Registered Merchant who accepts payments and issues authorized refunds; (3) Compliance Auditor / Admin who inspects forensic logs and monitors security alerts; and (4) Adversary / Attacker attempting replay attacks, race conditions, and parameter tampering.")
 
 add_figure(
-    "docs/diagrams/02_system_context.png",
+    "docs/diagrams/png/02_system_context.png",
     "DWPG System Context Architecture",
-    "Boundary context illustrating interaction between actors, REST API boundary, core business micro-modules, and isolated data tier.",
+    "Boundary context illustrating interaction between actors, REST API boundary, core business micro-modules, and isolated data tier (authored in Draw.io).",
     "Phase 3: System Context"
 )
 
 add_figure(
-    "docs/diagrams/03_use_case.png",
+    "docs/diagrams/png/03_use_case.png",
     "UML Use Case Diagram",
-    "Actor-to-use-case associations highlighting core functional cases and <<include>> security validation relationships.",
+    "Actor-to-use-case associations highlighting core functional cases and <<include>> security validation relationships (authored in Draw.io).",
     "Phase 3: Use Case Model"
 )
 
 add_h2("3.2 Analysis Model and Behavioral Sequence")
-add_p("The static analysis model categorizes software elements into Boundary, Control, and Entity stereotyping. Dynamic interactions are captured via detailed sequence diagrams modeling transactional atomicity and cryptographic authentication.")
+add_p("The static analysis model categorizes software elements into Boundary, Control, and Entity stereotyping. Dynamic interactions are captured via detailed sequence diagrams modeling transactional atomicity, cryptographic authentication, wallet top-up, payment processing, refund reversal, and replay traps.")
 
 add_figure(
-    "docs/diagrams/04_analysis_model.png",
+    "docs/diagrams/png/04_analysis_model.png",
     "Robustness Analysis Model",
-    "BCE (Boundary-Control-Entity) decomposition of the payment checkout and dispute subsystems.",
+    "BCE (Boundary-Control-Entity) decomposition of the payment checkout and dispute subsystems (authored in Draw.io).",
     "Phase 3: Analysis Model"
 )
 
 add_figure(
-    "docs/diagrams/12_payment_sequence.png",
+    "docs/diagrams/png/12_auth_sequence.png",
+    "UML Sequence Diagram: JWT Authentication & RBAC",
+    "Step-by-step authentication protocol including BCrypt verification, JWT token minting, and Bearer token filter validation (authored in Draw.io).",
+    "Phase 3: Auth Sequence"
+)
+
+add_figure(
+    "docs/diagrams/png/13_wallet_funding_sequence.png",
+    "UML Sequence Diagram: Wallet Provisioning & Funds Top-Up",
+    "Step-by-step sequence of simulated wallet funding, pessimistic balance locking, and transaction logging (authored in Draw.io).",
+    "Phase 3: Wallet Sequence"
+)
+
+add_figure(
+    "docs/diagrams/png/14_payment_sequence.png",
     "UML Sequence Diagram: Idempotent Payment Settlement",
-    "Chronological interaction between Customer, PaymentController, IdempotencyService, WalletService, and MariaDB showing row locking and commit boundaries.",
+    "Chronological interaction between Customer, PaymentController, IdempotencyService, WalletService, and MariaDB showing row locking and commit boundaries (authored in Draw.io).",
     "Phase 3: Payment Sequence"
 )
 
 add_figure(
-    "docs/diagrams/13_auth_sequence.png",
-    "UML Sequence Diagram: JWT Authentication & RBAC",
-    "Step-by-step authentication protocol including BCrypt verification, JWT token minting, and Bearer token filter validation.",
-    "Phase 3: Auth Sequence"
+    "docs/diagrams/png/15_refund_sequence.png",
+    "UML Sequence Diagram: Authorized Payment Refund & Reversal",
+    "State machine transition from CONFIRMED to REFUNDED, atomic wallet balance reversal, and refund audit ledger entry (authored in Draw.io).",
+    "Phase 3: Refund Sequence"
 )
 
+add_figure(
+    "docs/diagrams/png/16_replay_idempotency_sequence.png",
+    "UML Sequence Diagram: Idempotency Cache & Replay Trap Defense",
+    "Dual-scenario sequence modeling: Scenario 1 (identical replay served from cache without extra debit) and Scenario 2 (tampered payload returning HTTP 409 Conflict) (authored in Draw.io).",
+    "Phase 3: Replay Defense Sequence"
+)
+
+# ==============================================================================
 # CHAPTER 4: DATA & INFORMATION FLOW MODELING
+# ==============================================================================
 add_h1("4. Data and Information Flow Modeling (Phase 4)")
 add_h2("4.1 Entity Relationship Diagram (ERD)")
 add_p("The database architecture enforces strict third normal form (3NF) principles across 8 relational tables. Crucially, the schema enforces database-level check constraints (e.g. balance >= 0.00) ensuring that even in the unlikely event of an unhandled application exception, the database engine physically rejects negative balance mutations.")
 
 add_figure(
-    "docs/diagrams/05_erd.png",
+    "docs/diagrams/png/05_erd.png",
     "Entity Relationship Diagram (ERD)",
-    "Relational schema illustrating User, Wallet, Merchant, Payment, Refund, Transaction, AuditLog, and IdempotencyRecord entities.",
+    "3NF Relational schema illustrating User, Wallet, Merchant, Payment, Refund, Transaction, AuditLog, and IdempotencyRecord entities (authored in Draw.io).",
     "Phase 4: Data Modeling"
 )
 
@@ -420,53 +476,57 @@ add_h2("4.2 Data Flow Diagrams (DFD Level 0 & Level 1)")
 add_p("Data flow modeling tracks the lifecycle of sensitive financial information as it crosses trust boundaries from external HTTPS clients into core transactional engines and storage subsystems.")
 
 add_figure(
-    "docs/diagrams/06_dfd_level0.png",
+    "docs/diagrams/png/06_dfd_level0.png",
     "DFD Level 0: System Context Data Flow",
-    "High-level process flow showing principal inputs, transactional mutations, and external data storage sinks.",
+    "High-level process flow showing principal inputs, transactional mutations, and external data storage sinks (authored in Draw.io).",
     "Phase 4: DFD Level 0"
 )
 
 add_figure(
-    "docs/diagrams/07_dfd_level1.png",
+    "docs/diagrams/png/07_dfd_level1.png",
     "DFD Level 1: Subsystem Data Flow Decomposition",
-    "Decomposition into Auth Process (1.0), Wallet Operations (2.0), Payment Engine (3.0), and Audit SIEM Sink (4.0).",
+    "Decomposition into Auth Process (1.0), Wallet Operations (2.0), Payment Engine (3.0), Refund Engine (4.0), and Audit SIEM Sink (5.0) (authored in Draw.io).",
     "Phase 4: DFD Level 1"
 )
 
 add_figure(
-    "docs/diagrams/08_trust_boundary.png",
+    "docs/diagrams/png/08_trust_boundary.png",
     "Trust Boundary and Data Flow Security Perimeter",
-    "Demarcation between Untrusted Client Network, DMZ Ingress Gateway, Protected Internal Microservices, and Secure Persistence Vault.",
+    "Demarcation between Untrusted Client Network, DMZ Ingress Gateway, Protected Internal Microservices, and Secure Persistence Vault (authored in Draw.io).",
     "Phase 4: Trust Perimeter"
 )
 
+# ==============================================================================
 # CHAPTER 5: SOFTWARE ARCHITECTURE & DESIGN
+# ==============================================================================
 add_h1("5. Software Architecture and Design Engineering (Phase 5)")
 add_h2("5.1 Architectural Patterns")
 add_p("The DWPG Simulator employs a layered architectural style combined with hexagonal (ports and adapters) principles. The presentation tier (React SPA) connects over a secure REST API gateway to Spring Boot microservices. High cohesion and low coupling are maintained across the Controller, Service, and Repository layers.")
 
 add_figure(
-    "docs/diagrams/09_architecture.png",
+    "docs/diagrams/png/09_architecture.png",
     "Layered Software Architecture",
-    "Tiered representation of Frontend Presentation, Security Filter Chain, Business Domain Services, and Data Access Persistence.",
+    "Tiered representation of Frontend Presentation, Security Filter Chain, Business Domain Services, and Data Access Persistence (authored in Draw.io).",
     "Phase 5: Architecture"
 )
 
 add_figure(
-    "docs/diagrams/10_component.png",
+    "docs/diagrams/png/10_component.png",
     "UML Component Diagram",
-    "Component interfaces and dependency injection bindings connecting controllers, security utilities, and persistence repositories.",
+    "Component interfaces and dependency injection bindings connecting controllers, security utilities, and persistence repositories (authored in Draw.io).",
     "Phase 5: Component Design"
 )
 
 add_figure(
-    "docs/diagrams/11_deployment.png",
+    "docs/diagrams/png/11_deployment.png",
     "Physical Deployment Architecture",
-    "Multi-tier container deployment across Kubernetes Pods, ClusterIP services, MariaDB PVC storage, and Minikube NodePort ingress.",
+    "Multi-tier container deployment across Kubernetes Pods, ClusterIP services, MariaDB PVC storage, and Minikube NodePort ingress (authored in Draw.io).",
     "Phase 5: Deployment"
 )
 
+# ==============================================================================
 # CHAPTER 6: THREAT MODELING & SECURITY ANALYSIS
+# ==============================================================================
 add_h1("6. Threat Modeling and Security Analysis (Phase 7)")
 add_h2("6.1 Asset Identification & CIA Triad")
 add_p("Core assets identified in the DWPG ecosystem include: (1) Wallet Balances (Integrity & Confidentiality); (2) User & Merchant Authentication Credentials (Confidentiality & Integrity); (3) Transaction Ledger Records (Integrity & Non-Repudiation); (4) Idempotency Token Records (Integrity & Availability); and (5) Administrative Forensic Audit Trails (Integrity & Confidentiality).")
@@ -484,32 +544,36 @@ stride_rows = [
 add_styled_table(stride_headers, stride_rows, [1.4, 2.0, 1.4, 1.7])
 
 add_figure(
-    "docs/diagrams/14_threat_model.png",
+    "docs/diagrams/png/17_stride_threat_model.png",
     "STRIDE Threat Matrix and Mitigation Model",
-    "Systematic mapping of threat categories to architectural defense controls and security verification gates.",
+    "Systematic mapping of threat categories to architectural defense controls and security verification gates (authored in Draw.io).",
     "Phase 7: Threat Modeling"
 )
 
+# ==============================================================================
 # CHAPTER 7: ATTACK TREE ANALYSIS
+# ==============================================================================
 add_h1("7. Attack Tree Analysis (Phase 8)")
 add_h2("7.1 Selected Attacker Goal: Double Spending & Balance Theft")
 add_p("The primary objective of a financial adversary targeting the gateway is to execute Double Spending—spending identical wallet funds multiple times before balances synchronize, or forcing balance inversions below zero.")
 
 add_figure(
-    "docs/diagrams/15_attack_tree.png",
+    "docs/diagrams/png/18_attack_tree.png",
     "Attack Tree Decomposition: Double Spending & Gateway Tampering",
-    "Hierarchical attack paths detailing race condition exploitation, replay interception, parameter tampering, and mitigation barriers.",
+    "Hierarchical attack paths detailing race condition exploitation, replay interception, parameter tampering, and mitigation barriers (authored in Draw.io).",
     "Phase 8: Attack Tree"
 )
 
 add_figure(
-    "docs/diagrams/16_security_architecture.png",
+    "docs/diagrams/png/19_security_architecture.png",
     "Refined Security Architecture & Defense Layers",
-    "Layered defensive barriers: Ingress WAF -> JWT Auth -> Idempotency Cache -> Pessimistic DB Lock -> SIEM Logger.",
+    "Layered defensive barriers: Ingress WAF -> JWT Auth -> Idempotency Cache -> Pessimistic DB Lock -> SIEM Logger (authored in Draw.io).",
     "Phase 8: Security Architecture"
 )
 
+# ==============================================================================
 # CHAPTER 8: USER INTERFACE DESIGN & EVIDENCE
+# ==============================================================================
 add_h1("8. User Interface Design and Evidence (Phase 6)")
 add_h2("8.1 UI Ergonomics and Security Feedback")
 add_p("The frontend application was developed using React 18 and Vite. In accordance with secure UI design principles, the user interface provides real-time security banners, visual cryptographic pills displaying SHA-256 tamper hashes, live latency telemetry, and explicit adversarial attack simulation toggles.")
@@ -550,7 +614,9 @@ ui_evidence = [
 for img_p, title, desc, tag in ui_evidence:
     add_figure(img_p, title, desc, tag, width=Inches(6.0))
 
+# ==============================================================================
 # CHAPTER 9: PRODUCT BACKLOG
+# ==============================================================================
 add_h1("9. Product Backlog and Jira/Scrum (Phase 9)")
 add_h2("9.1 Epics and User Story Hierarchy")
 add_p("The product backlog was structured into 8 functional and security epics encompassing 13 prioritized work items. Story estimation used Fibonacci planning poker points based on complexity, architectural risk, and security validation requirements.")
@@ -573,7 +639,9 @@ backlog_rows = [
 ]
 add_styled_table(backlog_headers, backlog_rows, [0.7, 0.7, 1.0, 0.4, 0.6, 1.8, 1.3])
 
+# ==============================================================================
 # CHAPTER 10: SPRINT EXECUTION AND SCRUM METRICS
+# ==============================================================================
 add_h1("10. Sprint Execution and Scrum Metrics (Phase 10)")
 add_h2("10.1 Two-Sprint Cadence Summary")
 add_p("• Sprint 1 Focus: Core MVP architecture, authentication, wallet provisioning, merchant onboarding, and initial payment processing. Committed: 26 Story Points. Completed: 21 Story Points. Defect DEF-001 (5 SP) identified during concurrency testing was carried over to Sprint 2 for comprehensive architectural remediation.")
@@ -617,15 +685,17 @@ jira_evidence = [
 for img_p, title, desc, tag in jira_evidence:
     add_figure(img_p, title, desc, tag, width=Inches(5.8))
 
+# ==============================================================================
 # CHAPTER 11: DEVSECOPS, TESTING & SECURE DEPLOYMENT
+# ==============================================================================
 add_h1("11. DevSecOps, Testing and Containerized Deployment (Phases 11-15)")
 add_h2("11.1 Containerization with Docker (Phase 13)")
 add_p("The backend and frontend are packaged using multi-stage Dockerfiles. The backend build utilizes Eclipse Temurin OpenJDK 21 for compilation and packages the runnable JAR on a minimal Alpine runtime. Execution is strictly constrained to an unprivileged non-root user (UID 10001, GID 10001) with all Linux capabilities dropped (`cap_drop: ALL`).")
 
 add_figure(
-    "docs/diagrams/17_docker.png",
+    "docs/diagrams/png/20_docker_architecture.png",
     "Multi-Stage Docker Container Architecture",
-    "Multi-stage build pipelines isolating Maven compile dependencies from lightweight runtime containers.",
+    "Multi-stage build pipelines isolating Maven compile dependencies from lightweight runtime containers (authored in Draw.io).",
     "Phase 13: Docker Architecture"
 )
 
@@ -640,9 +710,9 @@ add_h2("11.2 Kubernetes Orchestration and Minikube (Phase 13)")
 add_p("Production deployment is orchestrated via 11 declarative Kubernetes manifests deployed into the dedicated `dwpg` namespace on Minikube. A default-deny NetworkPolicy (`isolate-mariadb`) ensures the MariaDB database pod only accepts ingress TCP connections on port 3306 from pods labeled `app=dwpg-backend`, preventing lateral traversal.")
 
 add_figure(
-    "docs/diagrams/18_kubernetes.png",
+    "docs/diagrams/png/21_kubernetes_architecture.png",
     "Kubernetes Pod Topology and Network Isolation",
-    "Cluster architecture illustrating dwpg namespace, ConfigMap/Secret bindings, and NetworkPolicy firewall barriers.",
+    "Cluster architecture illustrating dwpg namespace, ConfigMap/Secret bindings, and NetworkPolicy firewall barriers (authored in Draw.io).",
     "Phase 13: Kubernetes Architecture"
 )
 
@@ -657,16 +727,16 @@ add_h2("11.3 CI/CD Pipeline and Git Version Control (Phase 14)")
 add_p("The continuous integration and delivery pipeline is configured via GitHub Actions (`.github/workflows/ci.yml`). Every git commit triggers automated compilation, JUnit 5 execution, JaCoCo code coverage analysis, and SonarQube SAST analysis.")
 
 add_figure(
-    "docs/diagrams/19_cicd.png",
+    "docs/diagrams/png/22_cicd_pipeline.png",
     "DevSecOps CI/CD Pipeline Workflow",
-    "Automated pipeline stages: Git Push -> Build -> Unit Test -> SAST Scan -> Quality Gate -> Container Build -> K8s Deploy.",
+    "Automated pipeline stages: Git Push -> Build -> Unit Test -> SAST Scan -> Quality Gate -> Container Build -> K8s Deploy (authored in Draw.io).",
     "Phase 14: CI/CD Pipeline"
 )
 
 add_figure(
-    "docs/diagrams/20_security_pipeline.png",
+    "docs/diagrams/png/23_security_testing_pipeline.png",
     "Automated Security Testing Pipeline Architecture",
-    "Integration of static code analysis (SonarQube), dynamic concurrency testing, and fuzzing checks.",
+    "Integration of static code analysis (SonarQube), dynamic concurrency testing, and fuzzing checks (authored in Draw.io).",
     "Phase 14: Security Pipeline"
 )
 
@@ -716,54 +786,56 @@ sonar_evidence = [
 for img_p, title, desc, tag in sonar_evidence:
     add_figure(img_p, title, desc, tag, width=Inches(5.8))
 
+# ==============================================================================
 # CHAPTER 12: TRACEABILITY AND CONCLUSION
+# ==============================================================================
 add_h1("12. Traceability Matrix and Conclusion (Phase 16)")
 add_h2("12.1 End-to-End Requirement-to-Artifact Traceability Matrix")
 add_p("The traceability matrix ensures full bidirectional verification linking initial requirements to UML models, database schemas, code classes, automated test cases, and academic evidence artifacts.")
 
 trace_headers = ["Req ID", "Phase / Category", "Design & UML Model", "Source Implementation", "Automated Test Case", "Academic Evidence"]
 trace_rows = [
-    ["FR-01", "Phase 2 / Auth", "UC-01, DFD 1.0", "AuthController, AuthService", "TC-AUTH-001, AuthServiceTest", "UI-01, JIRA-09"],
-    ["FR-02", "Phase 2 / Auth", "Sequence Diagram (D-13)", "JwtTokenProvider, SecurityConfig", "TC-AUTH-002, SEC-TEST-001", "UI-02, JIRA-09"],
-    ["FR-03", "Phase 2 / Wallet", "ERD (D-05), DFD 2.0", "WalletController, WalletService", "TC-WAL-001, WalletServiceTest", "UI-03, JIRA-10"],
+    ["FR-01", "Phase 2 / Auth", "UC-01, DFD 1.0 (D-03, D-07)", "AuthController, AuthService", "TC-AUTH-001, AuthServiceTest", "UI-01, JIRA-09"],
+    ["FR-02", "Phase 2 / Auth", "Sequence Diagram (D-12)", "JwtTokenProvider, SecurityConfig", "TC-AUTH-002, SEC-TEST-001", "UI-02, JIRA-09"],
+    ["FR-03", "Phase 2 / Wallet", "ERD (D-05), DFD 2.0 (D-07)", "WalletController, WalletService", "TC-WAL-001, WalletServiceTest", "UI-03, JIRA-10"],
     ["FR-04", "Phase 2 / Wallet", "Analysis Model (D-04)", "WalletService.fundWallet", "TC-WAL-002, SEC-TEST-002", "UI-04, UI-05, JIRA-10"],
     ["FR-05", "Phase 2 / Merchant", "ERD (D-05)", "MerchantController, MerchantService", "TC-MER-001", "UI-06, UI-07, JIRA-10"],
-    ["FR-06", "Phase 2 / Payment", "Sequence Diagram (D-12)", "PaymentController.initiatePayment", "TC-PAY-001, SEC-TEST-003", "UI-08, JIRA-11"],
+    ["FR-06", "Phase 2 / Payment", "Sequence Diagram (D-14)", "PaymentController.initiatePayment", "TC-PAY-001, SEC-TEST-003", "UI-08, JIRA-11"],
     ["FR-07", "Phase 2 / Payment", "Component Model (D-10)", "PaymentService.processPayment", "TC-PAY-001, PaymentConcurrencyTest", "UI-09, UI-10, JIRA-11"],
-    ["FR-08", "Phase 2 / Refund", "State Machine (D-12)", "RefundController, RefundService", "TC-REF-001, SEC-TEST-006", "UI-12, UI-13, JIRA-12"],
-    ["FR-09", "Phase 2 / Ledger", "ERD (D-05), DFD 3.0", "TransactionController, TransactionService", "TC-LED-001", "UI-11, JIRA-12"],
+    ["FR-08", "Phase 2 / Refund", "Sequence Diagram (D-15)", "RefundController, RefundService", "TC-REF-001, SEC-TEST-006", "UI-12, UI-13, JIRA-12"],
+    ["FR-09", "Phase 2 / Ledger", "ERD (D-05), DFD 3.0 (D-07)", "TransactionController, TransactionService", "TC-LED-001", "UI-11, JIRA-12"],
     ["FR-10", "Phase 2 / SIEM", "Trust Boundary (D-08)", "AdminController, AuditService", "TC-ADM-001, SEC-TEST-008", "UI-15, JIRA-13"],
-    ["SR-03", "Phase 7 / Replay", "Attack Tree (D-15)", "IdempotencyService, IdempotencyRecord", "SEC-TEST-003, SEC-TEST-004", "UI-14, JIRA-13"],
-    ["SR-04", "Phase 7 / Concurrency", "Security Arch (D-16)", "WalletRepository.findByIdForUpdate", "PaymentConcurrencyTest (10 th)", "JIRA-04, JIRA-13"]
+    ["SR-03", "Phase 7 / Replay", "Attack Tree (D-18), Seq (D-16)", "IdempotencyService, IdempotencyRecord", "SEC-TEST-003, SEC-TEST-004", "UI-14, JIRA-13"],
+    ["SR-04", "Phase 7 / Concurrency", "Security Arch (D-19)", "WalletRepository.findByIdForUpdate", "PaymentConcurrencyTest (10 th)", "JIRA-04, JIRA-13"]
 ]
 add_styled_table(trace_headers, trace_rows, [0.6, 0.9, 1.2, 1.6, 1.4, 0.8])
 
 add_figure(
-    "docs/diagrams/21_traceability.png",
+    "docs/diagrams/png/24_traceability_matrix.png",
     "Requirements-to-Verification Traceability Model",
-    "Bidirectional graph mapping functional requirements, threat vectors, security controls, and verification evidence.",
+    "Bidirectional graph mapping functional requirements, threat vectors, security controls, and verification evidence (authored in Draw.io).",
     "Phase 16: Traceability Matrix"
 )
 
 add_h2("12.2 Academic Evidence Checklist")
 check_headers = ["Phase", "Curricular Requirement", "Implemented Artifact", "Verification Status"]
 check_rows = [
-    ["Phase 1", "Agile Process & Approach", "Scrum 2-sprint plan, daily standup logs, retrospective", "VERIFIED (Figure 1)"],
+    ["Phase 1", "Agile Process & Approach", "Scrum 2-sprint plan, daily standup logs, retrospective", "VERIFIED (Figure 1, Draw.io D-01)"],
     ["Phase 2", "Requirements Engineering", "10 Functional, 8 NFR, 8 Security Requirements documented", "VERIFIED (Tables 3-4)"],
-    ["Phase 3", "Requirements Analysis & UML", "Context, Use Case, BCE Analysis, Sequence Diagrams", "VERIFIED (Figures 2-6)"],
-    ["Phase 4", "Data & Information Flow", "3NF ERD, DFD Level 0, DFD Level 1, Trust Perimeter", "VERIFIED (Figures 7-10)"],
-    ["Phase 5", "Software Architecture", "Layered Architecture, Component, Physical Deployment", "VERIFIED (Figures 11-13)"],
-    ["Phase 6", "User Interface Design", "15 High-res real Playwright UI screenshots (UI-01..15)", "VERIFIED (Figures 17-31)"],
-    ["Phase 7", "Threat Modeling (STRIDE)", "Asset CIA, STRIDE matrix, DREAD qualitative scoring", "VERIFIED (Figure 14)"],
-    ["Phase 8", "Attack Tree Analysis", "Double spending attack tree & refined security architecture", "VERIFIED (Figures 15-16)"],
-    ["Phase 9", "Product Backlog & Jira", "13 Stories in Jira, product-backlog.csv, 8 Epics", "VERIFIED (Table 5, Figure 33)"],
-    ["Phase 10", "Sprint Metrics & Scrum", "16 Authentic Jira figures (JIRA-01..16), burndown curves", "VERIFIED (Figures 32-47)"],
-    ["Phase 11", "Secure Build Environment", "Maven, JaCoCo, SonarQube LTS integration (7 figures)", "VERIFIED (Figures 51-57)"],
+    ["Phase 3", "Requirements Analysis & UML", "Context, Use Case, BCE Analysis, 5 Sequence Diagrams", "VERIFIED (Figures 2-9, Draw.io D-02..04, D-12..16)"],
+    ["Phase 4", "Data & Information Flow", "3NF ERD, DFD Level 0, DFD Level 1, Trust Perimeter", "VERIFIED (Figures 10-13, Draw.io D-05..08)"],
+    ["Phase 5", "Software Architecture", "Layered Architecture, Component, Physical Deployment", "VERIFIED (Figures 14-16, Draw.io D-09..11)"],
+    ["Phase 6", "User Interface Design", "15 High-res real Playwright UI screenshots (UI-01..15)", "VERIFIED (Figures 20-34)"],
+    ["Phase 7", "Threat Modeling (STRIDE)", "Asset CIA, STRIDE matrix, DREAD qualitative scoring", "VERIFIED (Figure 17, Draw.io D-17)"],
+    ["Phase 8", "Attack Tree Analysis", "Double spending attack tree & refined security architecture", "VERIFIED (Figures 18-19, Draw.io D-18..19)"],
+    ["Phase 9", "Product Backlog & Jira", "13 Stories in Jira, product-backlog.csv, 8 Epics", "VERIFIED (Table 5, Figure 36)"],
+    ["Phase 10", "Sprint Metrics & Scrum", "16 Authentic Jira figures (JIRA-01..16), burndown curves", "VERIFIED (Figures 35-50)"],
+    ["Phase 11", "Secure Build Environment", "Maven, JaCoCo, SonarQube LTS integration (7 figures)", "VERIFIED (Figures 58-64)"],
     ["Phase 12", "Secure Coding & Refactoring", "Pessimistic DB row locking, BCrypt cost 12, Idempotency", "VERIFIED (Table 6)"],
-    ["Phase 13", "Docker & Kubernetes", "Multi-stage Dockerfile, 11 K8s YAMLs in dwpg namespace", "VERIFIED (Figures 48-49)"],
-    ["Phase 14", "CI/CD & Security Testing", "GitHub Actions ci.yml, 42 automated tests (100% pass)", "VERIFIED (Figure 50, Table 6)"],
-    ["Phase 15", "Logging, SIEM & Hardening", "Centralized AuditService, PAN scrubbing, NetworkPolicy", "VERIFIED (Figure 31)"],
-    ["Phase 16", "Final Security Review", "Traceability matrix, compliance report, zero vulnerabilities", "VERIFIED (Figure 58)"]
+    ["Phase 13", "Docker & Kubernetes", "Multi-stage Dockerfile, 11 K8s YAMLs in dwpg namespace", "VERIFIED (Figures 51-54, Draw.io D-20..21)"],
+    ["Phase 14", "CI/CD & Security Testing", "GitHub Actions ci.yml, 42 automated tests (100% pass)", "VERIFIED (Figures 55-56, Draw.io D-22..23, Table 6)"],
+    ["Phase 15", "Logging, SIEM & Hardening", "Centralized AuditService, PAN scrubbing, NetworkPolicy", "VERIFIED (Figure 34)"],
+    ["Phase 16", "Final Security Review", "Traceability matrix, compliance report, zero vulnerabilities", "VERIFIED (Figure 65, Draw.io D-24)"]
 ]
 add_styled_table(check_headers, check_rows, [0.7, 1.8, 2.7, 1.3])
 

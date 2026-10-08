@@ -1,0 +1,25 @@
+<mxfile host="app.diagrams.net" modified="2026-10-08T12:00:00.000Z" agent="Antigravity" version="24.0.0">
+  <diagram id="DWPG-08_trust_boundary" name="Trust Boundary Architecture">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_banner" value="DIGITAL WALLET &amp; PAYMENT GATEWAY SIMULATOR | TRUST BOUNDARY ARCHITECTURE &amp; SECURITY ZONES" style="shape=rect;fillColor=#1E3A8A;fontColor=#FFFFFF;fontStyle=1;fontSize=14;rounded=1;" vertex="1" parent="1"><mxGeometry x="60" y="20" width="1280" height="40" as="geometry" /></mxCell>
+        <mxCell id="z1" value="ZONE 1: UNTRUSTED PUBLIC ZONE&#xa;(Internet / Browser / Attacker Surface)" style="shape=rect;fillColor=#FFF5F5;strokeColor=#E53E3E;strokeWidth=2;dashed=1;verticalAlign=top;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="60" y="80" width="360" height="440" as="geometry" /></mxCell>
+        <mxCell id="z1_client" value="React 18 SPA Client&#xa;• Session in Memory&#xa;• Axios REST Client" style="fillColor=#FEE2E2;strokeColor=#DC2626;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="90" y="140" width="300" height="70" as="geometry" /></mxCell>
+        <mxCell id="z1_att" value="External Adversary&#xa;• Replay Attacks&#xa;• Concurrent Race Storm&#xa;• SQLi / Fuzz Probes" style="fillColor=#FEE2E2;strokeColor=#DC2626;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="90" y="260" width="300" height="90" as="geometry" /></mxCell>
+        <mxCell id="z2" value="ZONE 2: DMZ / INGRESS PERIMETER&#xa;(TLS &amp; Rate Limiting Barrier)" style="shape=rect;fillColor=#FFFFF0;strokeColor=#D69E2E;strokeWidth=2;dashed=1;verticalAlign=top;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="460" y="80" width="380" height="440" as="geometry" /></mxCell>
+        <mxCell id="z2_ng" value="Nginx Reverse Proxy&#xa;• NodePort 30080&#xa;• TLS Termination&#xa;• CORS Whitelist Policy" style="fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="500" y="140" width="300" height="80" as="geometry" /></mxCell>
+        <mxCell id="z2_flt" value="Spring Security Filter Chain&#xa;• Bearer JWT Validator&#xa;• Idempotency-Key Gate&#xa;• Nonce &amp; Header Verification" style="fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="500" y="260" width="300" height="90" as="geometry" /></mxCell>
+        <mxCell id="z3" value="ZONE 3: CORE FINANCIAL EXECUTION TIER&#xa;(ACID &amp; Isolated Database Vault)" style="shape=rect;fillColor=#F7FAFC;strokeColor=#2B6CB0;strokeWidth=2;dashed=1;verticalAlign=top;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="880" y="80" width="460" height="440" as="geometry" /></mxCell>
+        <mxCell id="z3_svc" value="Spring Boot Service Layer&#xa;• WalletService (Pessimistic Lock)&#xa;• PaymentService (Atomic Transfer)&#xa;• RefundService (State Guard)" style="fillColor=#DBEAFE;strokeColor=#1D4ED8;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="920" y="140" width="380" height="80" as="geometry" /></mxCell>
+        <mxCell id="z3_db" value="MariaDB 11.4 Storage Engine&#xa;• SELECT FOR UPDATE Row Locks&#xa;• CHECK (balance &gt;= 0)&#xa;• Immutable Audit Ledger Table" style="shape=cylinder;fillColor=#DCFCE7;strokeColor=#15803D;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="920" y="260" width="380" height="90" as="geometry" /></mxCell>
+        <mxCell id="tb_e1" value="HTTPS Crossing [Boundary A]" style="strokeColor=#E53E3E;strokeWidth=2;" edge="1" parent="1" source="z1_client" target="z2_ng"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="tb_e2" value="Internal Forward" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="z2_ng" target="z2_flt"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="tb_e3" value="Authenticated Principal [Boundary B]" style="strokeColor=#D69E2E;strokeWidth=2;" edge="1" parent="1" source="z2_flt" target="z3_svc"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="tb_e4" value="Isolated JDBC Connection [Boundary C]" style="strokeColor=#2B6CB0;strokeWidth=2;" edge="1" parent="1" source="z3_svc" target="z3_db"><mxGeometry relative="1" as="geometry" /></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
