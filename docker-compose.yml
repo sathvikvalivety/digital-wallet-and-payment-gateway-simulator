@@ -31,7 +31,14 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/${MARIADB_DATABASE:-dwpg_db}?createDatabaseIfNotExist=true
+      SPRING_PROFILES_ACTIVE: prod
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_NAME: ${MARIADB_DATABASE:-dwpg_db}
+      DB_USER: ${MARIADB_USER:-dwpg_user}
+      DB_PASSWORD: ${MARIADB_PASSWORD:-SimulatedPass123!}
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/${MARIADB_DATABASE:-dwpg_db}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.mariadb.jdbc.Driver
       SPRING_DATASOURCE_USERNAME: ${MARIADB_USER:-dwpg_user}
       SPRING_DATASOURCE_PASSWORD: ${MARIADB_PASSWORD:-SimulatedPass123!}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
