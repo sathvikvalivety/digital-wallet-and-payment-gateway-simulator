@@ -55,12 +55,12 @@ public class UpiAndOAuthSecurityIntegrationTest {
         if (!userRepository.existsByUsername("upi_test_user")) {
             User u = new User("upi_test_user", "upi_test@user.com", "hash", Role.ROLE_USER);
             u = userRepository.save(u);
-            walletRepository.save(new com.dwpg.simulator.entity.Wallet(u, BigDecimal.valueOf(100.00), "USD"));
+            walletRepository.save(new com.dwpg.simulator.entity.Wallet(u, BigDecimal.valueOf(100.00), "INR"));
         }
         if (!userRepository.existsByUsername("upi_other_user")) {
             User u2 = new User("upi_other_user", "upi_other@user.com", "hash", Role.ROLE_USER);
             u2 = userRepository.save(u2);
-            walletRepository.save(new com.dwpg.simulator.entity.Wallet(u2, BigDecimal.valueOf(100.00), "USD"));
+            walletRepository.save(new com.dwpg.simulator.entity.Wallet(u2, BigDecimal.valueOf(100.00), "INR"));
         }
         userToken = "Bearer " + jwtTokenProvider.generateToken("upi_test_user", "ROLE_USER");
         secondUserToken = "Bearer " + jwtTokenProvider.generateToken("upi_other_user", "ROLE_USER");

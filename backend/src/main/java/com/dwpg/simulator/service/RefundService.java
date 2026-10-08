@@ -84,7 +84,7 @@ public class RefundService {
                 .orElseThrow(() -> new ResourceNotFoundException("Customer wallet unavailable"));
 
         if (merchantWallet.getBalance().compareTo(payment.getAmount()) < 0) {
-            throw new InsufficientFundsException("Merchant wallet does not possess sufficient funds to cover the refund of $" + payment.getAmount());
+            throw new InsufficientFundsException("Merchant wallet does not possess sufficient funds to cover the refund of ₹" + payment.getAmount());
         }
 
         // 5. Reversal Mutations
@@ -123,7 +123,7 @@ public class RefundService {
         transactionRepository.save(merchantTx);
 
         auditService.logEvent(AuditEventType.PAYMENT_REFUNDED, refund.getId(), username, "SUCCESS",
-                "Refund executed: $" + payment.getAmount() + " reversed for payment #" + payment.getId(), clientIp);
+                "Refund executed: ₹" + payment.getAmount() + " reversed for payment #" + payment.getId(), clientIp);
 
         return new RefundResponse(
                 refund.getId(),

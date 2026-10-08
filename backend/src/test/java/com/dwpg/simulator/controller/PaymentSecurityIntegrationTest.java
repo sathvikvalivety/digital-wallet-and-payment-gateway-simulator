@@ -85,7 +85,7 @@ class PaymentSecurityIntegrationTest {
         // 1. End User
         User user = new User("alice", "alice@sec.test", "hash", Role.ROLE_USER);
         user = userRepository.save(user);
-        Wallet userWallet = new Wallet(user, BigDecimal.valueOf(500.00), "USD");
+        Wallet userWallet = new Wallet(user, BigDecimal.valueOf(500.00), "INR");
         userWallet = walletRepository.save(userWallet);
         userWalletId = userWallet.getId();
         userToken = "Bearer " + jwtTokenProvider.generateToken("alice", "ROLE_USER");
@@ -93,7 +93,7 @@ class PaymentSecurityIntegrationTest {
         // 2. Merchant User
         User merchantUser = new User("bob_merchant", "bob@sec.test", "hash", Role.ROLE_MERCHANT);
         merchantUser = userRepository.save(merchantUser);
-        Wallet merchantWallet = new Wallet(merchantUser, BigDecimal.valueOf(50.00), "USD");
+        Wallet merchantWallet = new Wallet(merchantUser, BigDecimal.valueOf(50.00), "INR");
         merchantWallet = walletRepository.save(merchantWallet);
         Merchant merchant = new Merchant(merchantUser, merchantWallet, "Bob Electronics", "m_key");
         merchant = merchantRepository.save(merchant);
@@ -110,7 +110,7 @@ class PaymentSecurityIntegrationTest {
     @DisplayName("Integration Test: Idempotent Payment - Same Idempotency-Key returns cached response without second debit")
     void testDuplicatePaymentWithSameIdempotencyKey() throws Exception {
         String idempotencyKey = "idem-" + UUID.randomUUID();
-        PaymentRequest req = new PaymentRequest(merchantId, BigDecimal.valueOf(50.00), "ORD-001", "USD");
+        PaymentRequest req = new PaymentRequest(merchantId, BigDecimal.valueOf(50.00), "ORD-001", "INR");
 
         // 1st request -> executes payment
         String firstResponse = mockMvc.perform(post("/api/payments")
@@ -143,7 +143,7 @@ class PaymentSecurityIntegrationTest {
     @DisplayName("Integration Test: Replay Attack - Reused Idempotency-Key with altered payload is rejected with 409 Conflict")
     void testReplayAttackWithModifiedPayloadAndReusedKey() throws Exception {
         String idempotencyKey = "replay-key-" + UUID.randomUUID();
-        PaymentRequest reqOriginal = new PaymentRequest(merchantId, BigDecimal.valueOf(50.00), "ORD-ORIGINAL", "USD");
+        PaymentRequest reqOriginal = new PaymentRequest(merchantId, BigDecimal.valueOf(50.00), "ORD-ORIGINAL", "INR");
 
         // Valid initial request
         mockMvc.perform(post("/api/payments")
@@ -154,7 +154,7 @@ class PaymentSecurityIntegrationTest {
                 .andExpect(status().isCreated());
 
         // Attacker attempts replay with modified amount ($999.00)
-        PaymentRequest reqTampered = new PaymentRequest(merchantId, BigDecimal.valueOf(999.00), "ORD-TAMPERED", "USD");
+        PaymentRequest reqTampered = new PaymentRequest(merchantId, BigDecimal.valueOf(999.00), "ORD-TAMPERED", "INR");
 
         mockMvc.perform(post("/api/payments")
                         .header("Authorization", userToken)
@@ -169,7 +169,7 @@ class PaymentSecurityIntegrationTest {
     @DisplayName("Integration Test: Duplicate Refund Prevention - Payment cannot be refunded twice")
     void testDuplicateRefundPrevention() throws Exception {
         String idempotencyKey = "refund-idem-" + UUID.randomUUID();
-        PaymentRequest req = new PaymentRequest(merchantId, BigDecimal.valueOf(30.00), "ORD-REFUND", "USD");
+        PaymentRequest req = new PaymentRequest(merchantId, BigDecimal.valueOf(30.00), "ORD-REFUND", "INR");
 
         // Execute initial payment
         String respStr = mockMvc.perform(post("/api/payments")

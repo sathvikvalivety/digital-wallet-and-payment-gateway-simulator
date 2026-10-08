@@ -74,7 +74,7 @@ class PaymentInputFuzzingTest {
 
         User user = new User("fuzz_user", "fuzz@test.com", "hash", Role.ROLE_USER);
         user = userRepository.save(user);
-        Wallet wallet = new Wallet(user, BigDecimal.valueOf(1000.00), "USD");
+        Wallet wallet = new Wallet(user, BigDecimal.valueOf(1000.00), "INR");
         walletRepository.save(wallet);
 
         userToken = "Bearer " + jwtTokenProvider.generateToken("fuzz_user", "ROLE_USER");
@@ -85,7 +85,7 @@ class PaymentInputFuzzingTest {
     @DisplayName("Fuzzing Test: Malformed & Negative Amounts must be rejected with 400 Bad Request")
     void testFuzzingInvalidAmounts(String amountStr) throws Exception {
         BigDecimal fuzzedAmount = new BigDecimal(amountStr);
-        PaymentRequest req = new PaymentRequest(1L, fuzzedAmount, "ORD-FUZZ", "USD");
+        PaymentRequest req = new PaymentRequest(1L, fuzzedAmount, "ORD-FUZZ", "INR");
 
         mockMvc.perform(post("/api/payments")
                         .header("Authorization", userToken)
@@ -107,7 +107,7 @@ class PaymentInputFuzzingTest {
     })
     @DisplayName("Fuzzing Test: Injection Probes in Order Reference handled safely without 500 error or SQLi")
     void testFuzzingInjectionInOrderReference(String injectionPayload) throws Exception {
-        PaymentRequest req = new PaymentRequest(999999L, BigDecimal.valueOf(10.00), injectionPayload, "USD");
+        PaymentRequest req = new PaymentRequest(999999L, BigDecimal.valueOf(10.00), injectionPayload, "INR");
 
         mockMvc.perform(post("/api/payments")
                         .header("Authorization", userToken)
@@ -120,7 +120,7 @@ class PaymentInputFuzzingTest {
     @Test
     @DisplayName("Fuzzing Test: Missing or Blank Idempotency-Key header rejected with 400 Bad Request")
     void testFuzzingMissingIdempotencyKey() throws Exception {
-        PaymentRequest req = new PaymentRequest(1L, BigDecimal.valueOf(10.00), "ORD-FUZZ", "USD");
+        PaymentRequest req = new PaymentRequest(1L, BigDecimal.valueOf(10.00), "ORD-FUZZ", "INR");
 
         mockMvc.perform(post("/api/payments")
                         .header("Authorization", userToken)

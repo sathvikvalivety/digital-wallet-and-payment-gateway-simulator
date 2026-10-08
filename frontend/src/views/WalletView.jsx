@@ -60,7 +60,7 @@ export default function WalletView() {
     try {
       const updated = await walletApi.topUp(amount);
       setWallet(updated);
-      setSuccessMsg(`Successfully added $${amount.toFixed(2)} simulated funds!`);
+      setSuccessMsg(`Successfully added ₹${amount.toFixed(2)} simulated funds!`);
       setTopUpAmount('');
     } catch (err) {
       setError(err.message || 'Top-up failed');
@@ -117,7 +117,7 @@ export default function WalletView() {
             <div className="metric-box" style={{ background: '#f0fdf4', borderColor: '#bbf7d0' }}>
               <span className="metric-label">Available Balance</span>
               <div className="metric-value" style={{ color: '#15803d' }}>
-                ${parseFloat(wallet.balance).toFixed(2)} <span style={{ fontSize: '1rem', fontWeight: 500 }}>{wallet.currency}</span>
+                ₹{parseFloat(wallet.balance).toFixed(2)} <span style={{ fontSize: '1rem', fontWeight: 500 }}>{wallet.currency || 'INR'}</span>
               </div>
               <p className="metric-desc">Zero real fiat money. Strictly simulated educational funds.</p>
             </div>
@@ -149,12 +149,12 @@ export default function WalletView() {
 
             <form onSubmit={handleTopUp}>
               <div className="form-group">
-                <label className="form-label">Amount (USD)</label>
+                <label className="form-label">Amount (₹ INR)</label>
                 <input
                   type="number"
                   step="0.01"
                   min="0.01"
-                  max="10000.00"
+                  max="50000.00"
                   className="form-input"
                   placeholder="0.00"
                   value={topUpAmount}
@@ -171,7 +171,7 @@ export default function WalletView() {
                     className="btn btn-secondary btn-sm"
                     onClick={() => setTopUpAmount(amt.toString())}
                   >
-                    +${amt}
+                    +₹{amt}
                   </button>
                 ))}
               </div>

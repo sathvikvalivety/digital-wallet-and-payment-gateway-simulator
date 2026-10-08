@@ -103,7 +103,7 @@ export default function PaymentView() {
             <div>
               <h2 className="card-title">Initiate Payment</h2>
               <p className="card-subtitle">
-                Available Wallet Balance: {walletBalance !== null ? `$${walletBalance.toFixed(2)}` : 'Loading...'}
+                Available Wallet Balance: {walletBalance !== null ? `₹${walletBalance.toFixed(2)}` : 'Loading...'}
               </p>
             </div>
           </div>
@@ -122,7 +122,7 @@ export default function PaymentView() {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Amount (USD)</label>
+              <label className="form-label">Amount (₹ INR)</label>
               <input
                 type="number"
                 step="0.01"
@@ -227,7 +227,7 @@ export default function PaymentView() {
             <div>
               <div className="metric-box" style={{ marginBottom: '1.25rem' }}>
                 <span className="metric-label">Paid Amount</span>
-                <div className="metric-value">${parseFloat(result.amount).toFixed(2)}</div>
+                <div className="metric-value">₹{parseFloat(result.amount).toFixed(2)}</div>
                 <p className="metric-desc">Status: {result.status}</p>
               </div>
 

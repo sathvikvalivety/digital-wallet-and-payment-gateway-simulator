@@ -85,12 +85,12 @@ public class WalletService {
                 TransactionType.TOP_UP,
                 request.getAmount(),
                 wallet.getBalance(),
-                "Simulated funds deposit of $" + request.getAmount()
+                "Simulated funds deposit of ₹" + request.getAmount()
         );
         transactionRepository.save(tx);
 
         auditService.logEvent(AuditEventType.FUNDS_ADDED, wallet.getId(), username, "SUCCESS",
-                "Added simulated funds: $" + request.getAmount() + ". New balance: $" + wallet.getBalance(), clientIp);
+                "Added simulated funds: ₹" + request.getAmount() + ". New balance: ₹" + wallet.getBalance(), clientIp);
 
         return toResponse(wallet);
     }
@@ -111,7 +111,7 @@ public class WalletService {
         return walletRepository.findByUserId(user.getId())
                 .map(this::toResponse)
                 .orElseGet(() -> {
-                    Wallet newWallet = new Wallet(user, BigDecimal.ZERO, "USD");
+                    Wallet newWallet = new Wallet(user, BigDecimal.ZERO, "INR");
                     newWallet = walletRepository.save(newWallet);
                     auditService.logEvent(AuditEventType.WALLET_CREATED, newWallet.getId(), username, "SUCCESS",
                             "Simulated wallet initialized for user.");

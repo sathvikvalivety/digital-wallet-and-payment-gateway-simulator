@@ -88,9 +88,9 @@ public class PaymentService {
                 // Verify Balance Sufficiency
                 if (senderWallet.getBalance().compareTo(request.getAmount()) < 0) {
                     auditService.logEvent(AuditEventType.PAYMENT_FAILED, null, username, "FAILED",
-                            "Payment declined due to insufficient funds. Requested: $" + request.getAmount() +
-                                    ", Available: $" + senderWallet.getBalance(), clientIp);
-                    throw new InsufficientFundsException("Insufficient funds. Available balance: $" + senderWallet.getBalance());
+                            "Payment declined due to insufficient funds. Requested: ₹" + request.getAmount() +
+                                    ", Available: ₹" + senderWallet.getBalance(), clientIp);
+                    throw new InsufficientFundsException("Insufficient funds. Available balance: ₹" + senderWallet.getBalance());
                 }
 
                 // Fetch Target Merchant & Acquire Lock on Merchant Settlement Wallet
@@ -159,7 +159,7 @@ public class PaymentService {
 
                 // Immutable Security Audit Logging
                 auditService.logEvent(AuditEventType.PAYMENT_CONFIRMED, payment.getId(), username, "SUCCESS",
-                        "Payment of $" + request.getAmount() + " confirmed for merchant " + merchant.getBusinessName(), clientIp);
+                        "Payment of ₹" + request.getAmount() + " confirmed for merchant " + merchant.getBusinessName(), clientIp);
 
                 return response;
             });

@@ -68,7 +68,7 @@ public class CheckoutSecurityIntegrationTest {
         if (!userRepository.existsByUsername("checkout_merchant_user")) {
             User u = new User("checkout_merchant_user", "merchant@checkout.com", "hash", Role.ROLE_MERCHANT);
             u = userRepository.save(u);
-            Wallet w = walletRepository.save(new Wallet(u, BigDecimal.valueOf(500.00), "USD"));
+            Wallet w = walletRepository.save(new Wallet(u, BigDecimal.valueOf(500.00), "INR"));
 
             String keyHash = idempotencyService.computeSha256(validApiKey);
             testMerchant = new Merchant(u, w, "Sathvik Tech Store", keyHash);

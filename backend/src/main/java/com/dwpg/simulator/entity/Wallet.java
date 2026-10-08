@@ -21,7 +21,7 @@ public class Wallet {
     private BigDecimal balance = BigDecimal.ZERO;
 
     @Column(nullable = false, length = 3)
-    private String currency = "USD";
+    private String currency = "INR";
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
@@ -34,7 +34,7 @@ public class Wallet {
     public Wallet(User user, BigDecimal initialBalance, String currency) {
         this.user = user;
         this.balance = initialBalance != null ? initialBalance : BigDecimal.ZERO;
-        this.currency = currency != null ? currency : "USD";
+        this.currency = currency != null ? currency : "INR";
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
     }

@@ -64,14 +64,14 @@ class PaymentConcurrencyTest {
         // Create sender user with exactly $100.00
         User bob = new User("bob", "bob@concurrency.test", "hash", Role.ROLE_USER);
         bob = userRepository.save(bob);
-        Wallet bobWallet = new Wallet(bob, BigDecimal.valueOf(100.00), "USD");
+        Wallet bobWallet = new Wallet(bob, BigDecimal.valueOf(100.00), "INR");
         bobWallet = walletRepository.save(bobWallet);
         senderWalletId = bobWallet.getId();
 
-        // Create merchant user with $0.00
+        // Create merchant user with ₹0.00
         User merchantUser = new User("acme_corp", "acme@test.com", "hash", Role.ROLE_MERCHANT);
         merchantUser = userRepository.save(merchantUser);
-        Wallet merchantWallet = new Wallet(merchantUser, BigDecimal.ZERO, "USD");
+        Wallet merchantWallet = new Wallet(merchantUser, BigDecimal.ZERO, "INR");
         merchantWallet = walletRepository.save(merchantWallet);
 
         Merchant merchant = new Merchant(merchantUser, merchantWallet, "Acme Store", "mock_key");
@@ -96,7 +96,7 @@ class PaymentConcurrencyTest {
                 try {
                     startLatch.await(); // Synchronize all threads to fire at the exact same instant
                     String idempotencyKey = "concurrent-key-" + UUID.randomUUID();
-                    PaymentRequest req = new PaymentRequest(merchantId, BigDecimal.valueOf(100.00), "ORD-CONC-" + index, "USD");
+                    PaymentRequest req = new PaymentRequest(merchantId, BigDecimal.valueOf(100.00), "ORD-CONC-" + index, "INR");
                     PaymentResponse resp = paymentService.processPayment(idempotencyKey, req, "bob", "127.0.0.1");
                     if (resp.getStatus() == PaymentStatus.CONFIRMED) {
                         successCount.incrementAndGet();

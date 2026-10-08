@@ -64,7 +64,7 @@ public class AuthService {
         user = userRepository.save(user);
 
         // Automatically provision digital wallet with zero balance
-        Wallet wallet = new Wallet(user, BigDecimal.ZERO, "USD");
+        Wallet wallet = new Wallet(user, BigDecimal.ZERO, "INR");
         wallet = walletRepository.save(wallet);
 
         auditService.logEvent(AuditEventType.WALLET_CREATED, wallet.getId(), user.getUsername(), "SUCCESS",
@@ -118,7 +118,7 @@ public class AuthService {
             user.setAuthProvider("GOOGLE");
             user = userRepository.save(user);
 
-            Wallet wallet = new Wallet(user, BigDecimal.valueOf(100.00), "USD");
+            Wallet wallet = new Wallet(user, BigDecimal.valueOf(100.00), "INR");
             wallet = walletRepository.save(wallet);
 
             auditService.logEvent(AuditEventType.WALLET_CREATED, wallet.getId(), user.getUsername(), "SUCCESS",

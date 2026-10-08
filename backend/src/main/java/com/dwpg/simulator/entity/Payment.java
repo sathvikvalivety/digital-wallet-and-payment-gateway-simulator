@@ -24,7 +24,7 @@ public class Payment {
     private BigDecimal amount;
 
     @Column(nullable = false, length = 3)
-    private String currency = "USD";
+    private String currency = "INR";
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -48,7 +48,7 @@ public class Payment {
         this.senderWallet = senderWallet;
         this.merchantWallet = merchantWallet;
         this.amount = amount;
-        this.currency = currency != null ? currency : "USD";
+        this.currency = currency != null ? currency : "INR";
         this.status = PaymentStatus.INITIATED;
         this.orderReference = orderReference;
         this.idempotencyKey = idempotencyKey;

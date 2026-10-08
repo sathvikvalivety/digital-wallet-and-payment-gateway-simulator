@@ -38,7 +38,7 @@ public class DwpgSimulatorApplication {
                         Role.ROLE_ADMIN
                 );
                 userRepository.save(admin);
-                Wallet adminWallet = new Wallet(admin, BigDecimal.valueOf(10000.00), "USD");
+                Wallet adminWallet = new Wallet(admin, BigDecimal.valueOf(10000.00), "INR");
                 walletRepository.save(adminWallet);
             }
 
@@ -51,7 +51,7 @@ public class DwpgSimulatorApplication {
                         Role.ROLE_USER
                 );
                 userRepository.save(alice);
-                Wallet aliceWallet = new Wallet(alice, BigDecimal.valueOf(5000.00), "USD");
+                Wallet aliceWallet = new Wallet(alice, BigDecimal.valueOf(5000.00), "INR");
                 walletRepository.save(aliceWallet);
             }
 
@@ -64,7 +64,7 @@ public class DwpgSimulatorApplication {
                         Role.ROLE_MERCHANT
                 );
                 userRepository.save(bob);
-                Wallet bobWallet = new Wallet(bob, BigDecimal.valueOf(10000.00), "USD");
+                Wallet bobWallet = new Wallet(bob, BigDecimal.valueOf(10000.00), "INR");
                 walletRepository.save(bobWallet);
             }
         };

@@ -51,7 +51,7 @@ class WalletServiceTest {
     void setUp() {
         alice = new User("alice", "alice@test.com", "hash", Role.ROLE_USER);
         alice.setId(1L);
-        aliceWallet = new Wallet(alice, BigDecimal.valueOf(100.00), "USD");
+        aliceWallet = new Wallet(alice, BigDecimal.valueOf(100.00), "INR");
         aliceWallet.setId(10L);
     }
 

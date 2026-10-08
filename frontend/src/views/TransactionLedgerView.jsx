@@ -151,9 +151,9 @@ export default function TransactionLedgerView() {
                       <span className={`badge badge-${tx.type}`}>{tx.type}</span>
                     </td>
                     <td style={{ fontWeight: 600, color: (tx.type === 'TOP_UP' || tx.type === 'TOPUP' || tx.type === 'REFUND' || tx.type === 'CREDIT') ? '#16a34a' : '#dc2626' }}>
-                      {(tx.type === 'TOP_UP' || tx.type === 'TOPUP' || tx.type === 'REFUND' || tx.type === 'CREDIT') ? '+' : '-'}${parseFloat(tx.amount).toFixed(2)}
+                      {(tx.type === 'TOP_UP' || tx.type === 'TOPUP' || tx.type === 'REFUND' || tx.type === 'CREDIT') ? '+' : '-'}₹{parseFloat(tx.amount).toFixed(2)}
                     </td>
-                    <td>${parseFloat(tx.balanceAfter).toFixed(2)}</td>
+                    <td>₹{parseFloat(tx.balanceAfter).toFixed(2)}</td>
                     <td>
                       <span className={`badge badge-${tx.status || 'CONFIRMED'}`}>{tx.status || 'CONFIRMED'}</span>
                     </td>
@@ -201,7 +201,7 @@ export default function TransactionLedgerView() {
 
             <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
               Refunding Transaction #{selectedTx.id} (Payment #{selectedTx.referencePaymentId}) of{' '}
-              <strong>${parseFloat(selectedTx.amount).toFixed(2)}</strong>.
+              <strong>₹{parseFloat(selectedTx.amount).toFixed(2)}</strong>.
             </p>
 
             <form onSubmit={handleProcessRefund}>

@@ -500,7 +500,7 @@ export default function UpiPaymentModal({ isOpen, onClose, onSuccess, initialAmo
                 <div style={{ marginTop: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid var(--border)' }}>
                   <strong>New Wallet Balance:</strong>{' '}
                   <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>
-                    ${parseFloat(verifyResult.newWalletBalance).toFixed(2)}
+                    ₹{parseFloat(verifyResult.newWalletBalance).toFixed(2)}
                   </span>
                 </div>
               )}

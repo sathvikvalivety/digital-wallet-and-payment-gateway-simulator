@@ -54,7 +54,7 @@ class AuthServiceTest {
     void setUp() {
         sampleUser = new User("alice", "alice@test.com", "hashed_pwd_123", Role.ROLE_USER);
         sampleUser.setId(1L);
-        sampleWallet = new Wallet(sampleUser, BigDecimal.ZERO, "USD");
+        sampleWallet = new Wallet(sampleUser, BigDecimal.ZERO, "INR");
         sampleWallet.setId(10L);
     }
 

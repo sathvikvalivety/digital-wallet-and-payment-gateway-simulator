@@ -17,7 +17,7 @@ public class PaymentRequest {
     @Size(max = 100, message = "Order reference cannot exceed 100 characters")
     private String orderReference;
 
-    private String currency = "USD";
+    private String currency = "INR";
 
     public PaymentRequest() {}
 
@@ -25,7 +25,7 @@ public class PaymentRequest {
         this.merchantId = merchantId;
         this.amount = amount;
         this.orderReference = orderReference;
-        this.currency = currency != null ? currency : "USD";
+        this.currency = currency != null ? currency : "INR";
     }
 
     public Long getMerchantId() { return merchantId; }
