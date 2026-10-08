@@ -102,7 +102,7 @@ export default function LoginView({ onSuccess, onSwitchToRegister }) {
             <button
               type="button"
               className="btn btn-secondary btn-sm"
-              onClick={() => fillQuickAccount('admin', 'AdminPass123!')}
+              onClick={() => fillQuickAccount('admin', 'Admin@Secure123!')}
             >
               Fill Admin
             </button>

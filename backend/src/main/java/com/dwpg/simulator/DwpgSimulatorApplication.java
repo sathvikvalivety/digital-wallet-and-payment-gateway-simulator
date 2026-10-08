@@ -30,7 +30,7 @@ public class DwpgSimulatorApplication {
                 String envPass = System.getenv("ADMIN_INITIAL_PASSWORD");
                 String seedPass = (envPass != null && !envPass.isBlank()) 
                         ? envPass 
-                        : "Admin#" + java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 12) + "!";
+                        : "Admin@Secure123!";
                 User admin = new User(
                         "admin",
                         "admin@dwpg.simulator",
@@ -40,6 +40,32 @@ public class DwpgSimulatorApplication {
                 userRepository.save(admin);
                 Wallet adminWallet = new Wallet(admin, BigDecimal.valueOf(10000.00), "USD");
                 walletRepository.save(adminWallet);
+            }
+
+            // Seed Alice (Customer) if not present
+            if (!userRepository.existsByUsername("alice")) {
+                User alice = new User(
+                        "alice",
+                        "alice@example.com",
+                        passwordEncoder.encode("SecurePass123!"),
+                        Role.ROLE_USER
+                );
+                userRepository.save(alice);
+                Wallet aliceWallet = new Wallet(alice, BigDecimal.valueOf(5000.00), "USD");
+                walletRepository.save(aliceWallet);
+            }
+
+            // Seed Bob (Merchant) if not present
+            if (!userRepository.existsByUsername("merchant_bob")) {
+                User bob = new User(
+                        "merchant_bob",
+                        "bob@merchant.simulator",
+                        passwordEncoder.encode("SecurePass123!"),
+                        Role.ROLE_MERCHANT
+                );
+                userRepository.save(bob);
+                Wallet bobWallet = new Wallet(bob, BigDecimal.valueOf(10000.00), "USD");
+                walletRepository.save(bobWallet);
             }
         };
     }
