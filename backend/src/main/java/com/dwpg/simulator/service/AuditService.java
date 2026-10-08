@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -19,8 +18,9 @@ public class AuditService {
 
     private final AuditLogRepository auditLogRepository;
 
+    private static final String DEFAULT_IP_ADDRESS = "127.0.0.1";
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("(?i)(password|secret|token)\"\\s*:\\s*\"[^\"]+\"");
-    private static final Pattern CARD_PATTERN = Pattern.compile("\\b(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14})\\b");
+    private static final Pattern CARD_PATTERN = Pattern.compile("\\b(?:4\\d{12}(?:\\d{3})?|5[1-5]\\d{14})\\b");
 
     public AuditService(AuditLogRepository auditLogRepository) {
         this.auditLogRepository = auditLogRepository;
@@ -43,12 +43,12 @@ public class AuditService {
 
     @Transactional
     public AuditLog logEvent(AuditEventType eventType, Long resourceId, String actorUsername, String outcome, String details) {
-        return logEvent(eventType, resourceId, actorUsername, outcome, details, "127.0.0.1");
+        return logEvent(eventType, resourceId, actorUsername, outcome, details, DEFAULT_IP_ADDRESS);
     }
 
     @Transactional
     public AuditLog logEvent(AuditEventType eventType, Long resourceId, String actorUsername, String outcome) {
-        return logEvent(eventType, resourceId, actorUsername, outcome, null, "127.0.0.1");
+        return logEvent(eventType, resourceId, actorUsername, outcome, null, DEFAULT_IP_ADDRESS);
     }
 
     public List<AuditLogResponse> getAllAuditLogs(int page, int size) {
@@ -77,12 +77,12 @@ public class AuditService {
     }
 
     private String extractClientIp(HttpServletRequest request) {
-        if (request == null) return "127.0.0.1";
+        if (request == null) return DEFAULT_IP_ADDRESS;
         String xf = request.getHeader("X-Forwarded-For");
         if (xf != null && !xf.isBlank()) {
             return xf.split(",")[0].trim();
         }
-        return request.getRemoteAddr() != null ? request.getRemoteAddr() : "127.0.0.1";
+        return request.getRemoteAddr() != null ? request.getRemoteAddr() : DEFAULT_IP_ADDRESS;
     }
 
     private String scrubSensitiveData(String input) {

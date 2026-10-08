@@ -25,12 +25,16 @@ public class DwpgSimulatorApplication {
                                              WalletRepository walletRepository,
                                              PasswordEncoder passwordEncoder) {
         return args -> {
-            // Seed Admin User if not present
+            // Seed Admin User if not present using dynamically provided or generated seed
             if (!userRepository.existsByUsername("admin")) {
+                String envPass = System.getenv("ADMIN_INITIAL_PASSWORD");
+                String seedPass = (envPass != null && !envPass.isBlank()) 
+                        ? envPass 
+                        : "Admin#" + java.util.UUID.randomUUID().toString().replace("-", "").substring(0, 12) + "!";
                 User admin = new User(
                         "admin",
                         "admin@dwpg.simulator",
-                        passwordEncoder.encode("Admin@Secure123!"),
+                        passwordEncoder.encode(seedPass),
                         Role.ROLE_ADMIN
                 );
                 userRepository.save(admin);

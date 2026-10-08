@@ -5,7 +5,6 @@ import com.dwpg.simulator.entity.IdempotencyRecord;
 import com.dwpg.simulator.exception.IdempotencyException;
 import com.dwpg.simulator.repository.IdempotencyRecordRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
@@ -43,22 +42,22 @@ public class IdempotencyService {
 
         Optional<IdempotencyRecord> recordOpt = idempotencyRecordRepository.findByIdempotencyKey(idempotencyKey);
         if (recordOpt.isPresent()) {
-            IdempotencyRecord record = recordOpt.get();
-            if (!record.getRequestHash().equals(payloadHash)) {
-                auditService.logEvent(AuditEventType.REPLAY_DETECTED, record.getResourceId(), username, "FAILED",
+            IdempotencyRecord existingRecord = recordOpt.get();
+            if (!existingRecord.getRequestHash().equals(payloadHash)) {
+                auditService.logEvent(AuditEventType.REPLAY_DETECTED, existingRecord.getResourceId(), username, "FAILED",
                         "Idempotency key '" + idempotencyKey + "' reused with modified request payload (Replay/Tampering attempt).", clientIp);
                 throw new IdempotencyException("Idempotency key was previously used with different request parameters. Replay attempt rejected.");
             }
-            auditService.logEvent(AuditEventType.DUPLICATE_PAYMENT, record.getResourceId(), username, "SUCCESS",
+            auditService.logEvent(AuditEventType.DUPLICATE_PAYMENT, existingRecord.getResourceId(), username, "SUCCESS",
                     "Idempotent duplicate request handled; returning cached response.", clientIp);
-            return Optional.of(record);
+            return Optional.of(existingRecord);
         }
         return Optional.empty();
     }
 
     @Transactional
     public IdempotencyRecord saveIdempotencyRecord(String idempotencyKey, String payloadHash, Long resourceId, String responseBody, int statusCode) {
-        IdempotencyRecord record = new IdempotencyRecord(idempotencyKey, payloadHash, resourceId, responseBody, statusCode);
-        return idempotencyRecordRepository.save(record);
+        IdempotencyRecord newRecord = new IdempotencyRecord(idempotencyKey, payloadHash, resourceId, responseBody, statusCode);
+        return idempotencyRecordRepository.save(newRecord);
     }
 }

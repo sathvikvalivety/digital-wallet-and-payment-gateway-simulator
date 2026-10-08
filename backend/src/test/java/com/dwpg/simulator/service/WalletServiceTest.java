@@ -62,7 +62,8 @@ class WalletServiceTest {
         assertEquals(BigDecimal.valueOf(60.00), aliceWallet.getBalance());
 
         // Overdraft attempt must throw InsufficientFundsException
-        assertThrows(InsufficientFundsException.class, () -> aliceWallet.debit(BigDecimal.valueOf(70.00)));
+        BigDecimal overdraftAmount = BigDecimal.valueOf(70.00);
+        assertThrows(InsufficientFundsException.class, () -> aliceWallet.debit(overdraftAmount));
     }
 
     @Test
