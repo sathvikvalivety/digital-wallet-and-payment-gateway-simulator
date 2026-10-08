@@ -13,3 +13,19 @@ spec:
       name: http
   selector:
     app: dwpg-backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: dwpg
+  labels:
+    app: dwpg-backend
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+  selector:
+    app: dwpg-backend

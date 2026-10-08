@@ -36,6 +36,16 @@ spec:
               drop:
                 - ALL
           env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: dwpg-config
+                  key: SPRING_PROFILES_ACTIVE
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: dwpg-config
+                  key: SPRING_DATASOURCE_DRIVER_CLASS_NAME
             - name: SPRING_DATASOURCE_URL
               valueFrom:
                 configMapKeyRef:
