@@ -53,7 +53,8 @@ export default function TransactionLedgerView() {
 
   const handleProcessRefund = async (e) => {
     e.preventDefault();
-    if (!selectedTx || !selectedTx.referencePaymentId) {
+    const pid = selectedTx ? (selectedTx.paymentId || selectedTx.referencePaymentId) : null;
+    if (!selectedTx || !pid) {
       setError('Cannot refund: Missing payment reference ID');
       return;
     }
@@ -63,7 +64,7 @@ export default function TransactionLedgerView() {
     setSuccessMsg('');
 
     try {
-      await refundApi.requestRefund(selectedTx.referencePaymentId, refundReason, refundIdempotencyKey);
+      await refundApi.requestRefund(pid, refundReason, refundIdempotencyKey);
       setSuccessMsg(`Refund successfully processed for Transaction #${selectedTx.id}! Funds restored to wallet.`);
       closeRefundModal();
       await loadTransactions();
@@ -149,12 +150,12 @@ export default function TransactionLedgerView() {
                     <td>
                       <span className={`badge badge-${tx.type}`}>{tx.type}</span>
                     </td>
-                    <td style={{ fontWeight: 600, color: tx.type === 'TOPUP' || tx.type === 'REFUND' ? '#16a34a' : '#dc2626' }}>
-                      {tx.type === 'TOPUP' || tx.type === 'REFUND' ? '+' : '-'}${parseFloat(tx.amount).toFixed(2)}
+                    <td style={{ fontWeight: 600, color: (tx.type === 'TOP_UP' || tx.type === 'TOPUP' || tx.type === 'REFUND' || tx.type === 'CREDIT') ? '#16a34a' : '#dc2626' }}>
+                      {(tx.type === 'TOP_UP' || tx.type === 'TOPUP' || tx.type === 'REFUND' || tx.type === 'CREDIT') ? '+' : '-'}${parseFloat(tx.amount).toFixed(2)}
                     </td>
                     <td>${parseFloat(tx.balanceAfter).toFixed(2)}</td>
                     <td>
-                      <span className={`badge badge-${tx.status}`}>{tx.status}</span>
+                      <span className={`badge badge-${tx.status || 'CONFIRMED'}`}>{tx.status || 'CONFIRMED'}</span>
                     </td>
                     <td className="code-pill" style={{ fontSize: '0.7rem' }}>
                       {tx.correlationId ? tx.correlationId.substring(0, 8) + '...' : 'N/A'}
@@ -166,7 +167,7 @@ export default function TransactionLedgerView() {
                       {new Date(tx.createdAt).toLocaleString()}
                     </td>
                     <td>
-                      {tx.type === 'PAYMENT' && tx.status === 'CONFIRMED' && (
+                      {(tx.type === 'DEBIT' || tx.type === 'PAYMENT') && (tx.paymentId != null || tx.referencePaymentId != null) && (
                         <button
                           className="btn btn-secondary btn-sm"
                           style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem' }}

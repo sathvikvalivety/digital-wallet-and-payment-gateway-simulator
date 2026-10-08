@@ -1,24 +1,85 @@
 <mxfile host="app.diagrams.net" modified="2026-10-08T12:00:00.000Z" agent="Antigravity" version="24.0.0">
   <diagram id="DWPG-05_erd" name="Entity-Relationship Diagram">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="title_banner" value="DIGITAL WALLET &amp; PAYMENT GATEWAY SIMULATOR | ENTITY-RELATIONSHIP DIAGRAM (3RD NORMAL FORM RELATIONAL SCHEMA)" style="shape=rect;fillColor=#1E3A8A;fontColor=#FFFFFF;fontStyle=1;fontSize=14;rounded=1;" vertex="1" parent="1"><mxGeometry x="60" y="20" width="1280" height="40" as="geometry" /></mxCell>
-        <mxCell id="t_user" value="users&#xa;───────────────&#xa;PK id : BIGINT&#xa;   username : VARCHAR(50) [UQ]&#xa;   email : VARCHAR(100) [UQ]&#xa;   password_hash : VARCHAR(100)&#xa;   role : VARCHAR(20)&#xa;   created_at : TIMESTAMP" style="rounded=1;fillColor=#EFF6FF;strokeColor=#1D4ED8;fontStyle=1;align=left;fontSize=10;" vertex="1" parent="1"><mxGeometry x="80" y="90" width="260" height="140" as="geometry" /></mxCell>
-        <mxCell id="t_wal" value="wallets&#xa;───────────────&#xa;PK id : BIGINT&#xa;FK user_id : BIGINT [UQ]&#xa;   currency : VARCHAR(3)&#xa;   balance : DECIMAL(15,2)&#xa;   CHECK (balance &gt;= 0)&#xa;   version : BIGINT&#xa;   updated_at : TIMESTAMP" style="rounded=1;fillColor=#ECFDF5;strokeColor=#059669;fontStyle=1;align=left;fontSize=10;" vertex="1" parent="1"><mxGeometry x="400" y="90" width="260" height="150" as="geometry" /></mxCell>
-        <mxCell id="t_merch" value="merchants&#xa;───────────────&#xa;PK id : BIGINT&#xa;FK user_id : BIGINT [UQ]&#xa;   merchant_name : VARCHAR(100)&#xa;   api_key_hash : VARCHAR(64) [UQ]&#xa;   webhook_url : VARCHAR(255)&#xa;   created_at : TIMESTAMP" style="rounded=1;fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;align=left;fontSize=10;" vertex="1" parent="1"><mxGeometry x="720" y="90" width="260" height="140" as="geometry" /></mxCell>
-        <mxCell id="t_pay" value="payments&#xa;───────────────&#xa;PK id : BIGINT&#xa;FK sender_wallet_id : BIGINT&#xa;FK merchant_id : BIGINT&#xa;   amount : DECIMAL(15,2)&#xa;   status : VARCHAR(20)&#xa;   idempotency_key : VARCHAR(64) [UQ]&#xa;   tamper_hash : VARCHAR(64)&#xa;   created_at : TIMESTAMP" style="rounded=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontStyle=1;align=left;fontSize=10;" vertex="1" parent="1"><mxGeometry x="400" y="290" width="260" height="170" as="geometry" /></mxCell>
-        <mxCell id="t_tx" value="transactions&#xa;───────────────&#xa;PK id : BIGINT&#xa;FK wallet_id : BIGINT&#xa;FK payment_id : BIGINT [NULL]&#xa;   type : VARCHAR(20)&#xa;   amount : DECIMAL(15,2)&#xa;   balance_after : DECIMAL(15,2)&#xa;   created_at : TIMESTAMP" style="rounded=1;fillColor=#EFF6FF;strokeColor=#1D4ED8;fontStyle=1;align=left;fontSize=10;" vertex="1" parent="1"><mxGeometry x="80" y="290" width="260" height="150" as="geometry" /></mxCell>
-        <mxCell id="t_ref" value="refunds&#xa;───────────────&#xa;PK id : BIGINT&#xa;FK payment_id : BIGINT [UQ]&#xa;FK requester_wallet_id : BIGINT&#xa;   amount : DECIMAL(15,2)&#xa;   status : VARCHAR(20)&#xa;   reason : VARCHAR(255)&#xa;   created_at : TIMESTAMP" style="rounded=1;fillColor=#FEF2F2;strokeColor=#DC2626;fontStyle=1;align=left;fontSize=10;" vertex="1" parent="1"><mxGeometry x="720" y="290" width="260" height="150" as="geometry" /></mxCell>
-        <mxCell id="t_idem" value="idempotency_records&#xa;───────────────────&#xa;PK idempotency_key : VARCHAR(64)&#xa;   request_hash : VARCHAR(64)&#xa;   status_code : INT&#xa;   response_body : TEXT&#xa;   created_at : TIMESTAMP&#xa;   expires_at : TIMESTAMP" style="rounded=1;fillColor=#FFFBEB;strokeColor=#B45309;fontStyle=1;align=left;fontSize=10;" vertex="1" parent="1"><mxGeometry x="1040" y="90" width="260" height="140" as="geometry" /></mxCell>
-        <mxCell id="t_aud" value="audit_logs&#xa;───────────────&#xa;PK id : BIGINT&#xa;   event_type : VARCHAR(50)&#xa;   actor_username : VARCHAR(50)&#xa;   client_ip : VARCHAR(45)&#xa;   action_details : TEXT&#xa;   created_at : TIMESTAMP" style="rounded=1;fillColor=#F8FAFC;strokeColor=#475569;fontStyle=1;align=left;fontSize=10;" vertex="1" parent="1"><mxGeometry x="1040" y="290" width="260" height="140" as="geometry" /></mxCell>
-        <mxCell id="r1" value="1 : 1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="t_user" target="t_wal"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="r2" value="1 : 1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="t_user" target="t_merch"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="r3" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="t_wal" target="t_pay"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="r4" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="t_merch" target="t_pay"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="r5" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="t_wal" target="t_tx"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="r6" value="1 : 1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1E3A8A;strokeWidth=2;" edge="1" parent="1" source="t_pay" target="t_ref"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="title_banner" value="DIGITAL WALLET &amp; PAYMENT GATEWAY SIMULATOR | ENTITY-RELATIONSHIP DIAGRAM (3NF SCHEMA &amp; CARDINALITIES)" style="shape=rect;fillColor=#1E3A8A;fontColor=#FFFFFF;fontStyle=1;fontSize=14;rounded=1;" vertex="1" parent="1"><mxGeometry x="60" y="20" width="1440" height="40" as="geometry" /></mxCell>
+        
+        <!-- Table 1: users -->
+        <mxCell id="t_user" value="users (System Identity &amp; Auth)&#xa;──────────────────────────────────────&#xa;PK  id : BIGINT&#xa;UQ  username : VARCHAR(50)&#xa;UQ  email : VARCHAR(100)&#xa;    password_hash : VARCHAR(100) [BCrypt 12]&#xa;    role : VARCHAR(20) [USER, MERCHANT, ADMIN]&#xa;    created_at : TIMESTAMP" style="rounded=1;fillColor=#EFF6FF;strokeColor=#1D4ED8;fontStyle=1;align=left;fontSize=10;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="80" y="90" width="280" height="180" as="geometry" /></mxCell>
+
+        <!-- Table 2: wallets -->
+        <mxCell id="t_wal" value="wallets (Simulated Balance Vault)&#xa;──────────────────────────────────────&#xa;PK  id : BIGINT&#xa;FK  user_id : BIGINT [UQ, users.id]&#xa;    currency : VARCHAR(3) [USD]&#xa;    balance : DECIMAL(15,2) [CHECK &gt;= 0.00]&#xa;    version : BIGINT [Optimistic Lock]&#xa;    updated_at : TIMESTAMP" style="rounded=1;fillColor=#ECFDF5;strokeColor=#059669;fontStyle=1;align=left;fontSize=10;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="460" y="90" width="280" height="180" as="geometry" /></mxCell>
+
+        <!-- Table 3: merchants -->
+        <mxCell id="t_merch" value="merchants (Registered Vendor Profiles)&#xa;──────────────────────────────────────&#xa;PK  id : BIGINT&#xa;FK  user_id : BIGINT [UQ, users.id]&#xa;    business_name : VARCHAR(100)&#xa;UQ  api_key_hash : VARCHAR(64) [SHA-256]&#xa;    status : VARCHAR(20) [ACTIVE, SUSPENDED]&#xa;    created_at : TIMESTAMP" style="rounded=1;fillColor=#FEF3C7;strokeColor=#D97706;fontStyle=1;align=left;fontSize=10;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="840" y="90" width="280" height="180" as="geometry" /></mxCell>
+
+        <!-- Table 4: idempotency_records -->
+        <mxCell id="t_idem" value="idempotency_records (Anti-Replay Cache)&#xa;──────────────────────────────────────&#xa;PK  idempotency_key : VARCHAR(64)&#xa;    request_hash : VARCHAR(64) [SHA-256 Digest]&#xa;    status_code : INT [e.g. 201 Created]&#xa;    response_body : TEXT [Cached Response]&#xa;    created_at : TIMESTAMP&#xa;    expires_at : TIMESTAMP [TTL 24 Hours]" style="rounded=1;fillColor=#FFFBEB;strokeColor=#B45309;fontStyle=1;align=left;fontSize=10;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="1220" y="90" width="280" height="180" as="geometry" /></mxCell>
+
+        <!-- Table 5: transactions -->
+        <mxCell id="t_tx" value="transactions (Immutable Double-Entry Ledger)&#xa;──────────────────────────────────────&#xa;PK  id : BIGINT&#xa;FK  wallet_id : BIGINT [wallets.id]&#xa;FK  payment_id : BIGINT [NULLABLE, payments.id]&#xa;    type : VARCHAR(20) [DEBIT, CREDIT, TOP_UP, REFUND]&#xa;    amount : DECIMAL(15,2)&#xa;    balance_after : DECIMAL(15,2)&#xa;    created_at : TIMESTAMP" style="rounded=1;fillColor=#EFF6FF;strokeColor=#1D4ED8;fontStyle=1;align=left;fontSize=10;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="80" y="410" width="280" height="190" as="geometry" /></mxCell>
+
+        <!-- Table 6: payments -->
+        <mxCell id="t_pay" value="payments (Settlement Order Transactions)&#xa;──────────────────────────────────────&#xa;PK  id : BIGINT&#xa;FK  sender_wallet_id : BIGINT [wallets.id]&#xa;FK  merchant_id : BIGINT [merchants.id]&#xa;    amount : DECIMAL(15,2)&#xa;    status : VARCHAR(20) [INITIATED, CONFIRMED, REFUNDED]&#xa;UQ  idempotency_key : VARCHAR(64) [idempotency_records.id]&#xa;    tamper_hash : VARCHAR(64) [SHA-256 Seal]&#xa;    created_at : TIMESTAMP" style="rounded=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontStyle=1;align=left;fontSize=10;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="460" y="410" width="280" height="200" as="geometry" /></mxCell>
+
+        <!-- Table 7: refunds -->
+        <mxCell id="t_ref" value="refunds (Dispute &amp; Settlement Reversals)&#xa;──────────────────────────────────────&#xa;PK  id : BIGINT&#xa;FK  payment_id : BIGINT [UQ, payments.id]&#xa;FK  requester_wallet_id : BIGINT [wallets.id]&#xa;    amount : DECIMAL(15,2)&#xa;    status : VARCHAR(20) [COMPLETED, REJECTED]&#xa;    reason : VARCHAR(255)&#xa;    created_at : TIMESTAMP" style="rounded=1;fillColor=#FEF2F2;strokeColor=#DC2626;fontStyle=1;align=left;fontSize=10;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="840" y="410" width="280" height="190" as="geometry" /></mxCell>
+
+        <!-- Table 8: audit_logs -->
+        <mxCell id="t_aud" value="audit_logs (SIEM Forensic Audit Stream)&#xa;──────────────────────────────────────&#xa;PK  id : BIGINT&#xa;    event_type : VARCHAR(50) [AUTH, PAYMENT, REPLAY]&#xa;    actor_username : VARCHAR(50)&#xa;    resource_id : BIGINT [Entity ID]&#xa;    outcome : VARCHAR(20) [SUCCESS, FAILURE]&#xa;    ip_address : VARCHAR(45)&#xa;    details : TEXT [PII Scrubbed]&#xa;    created_at : TIMESTAMP" style="rounded=1;fillColor=#F8FAFC;strokeColor=#475569;fontStyle=1;align=left;fontSize=10;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="1220" y="410" width="280" height="190" as="geometry" /></mxCell>
+
+        <!-- Relationships with Crow-Foot notation and explicit routing -->
+        <!-- 1. users -> wallets (1:1) -->
+        <mxCell id="r1" value="1 : 1 (owns wallet)&#xa;[FK: user_id]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=2;startArrow=ERone;endArrow=ERone;startSize=8;endSize=8;fontStyle=1;fontSize=9;fontColor=#1E3A8A;" edge="1" parent="1" source="t_user" target="t_wal">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="360" y="150" /><mxPoint x="460" y="150" /></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 2. users -> merchants (1:0..1) -->
+        <mxCell id="r2" value="1 : 0..1 (registers profile)&#xa;[FK: user_id]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D97706;strokeWidth=2;startArrow=ERone;endArrow=ERzeroToOne;startSize=8;endSize=8;fontStyle=1;fontSize=9;fontColor=#B45309;" edge="1" parent="1" source="t_user" target="t_merch">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="220" y="80" /><mxPoint x="980" y="80" /></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 3. wallets -> payments (1:N) -->
+        <mxCell id="r3" value="1 : N (originates debits)&#xa;[FK: sender_wallet_id]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#059669;strokeWidth=2;startArrow=ERone;endArrow=ERmany;startSize=8;endSize=8;fontStyle=1;fontSize=9;fontColor=#065F46;" edge="1" parent="1" source="t_wal" target="t_pay">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="530" y="270" /><mxPoint x="530" y="410" /></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 4. merchants -> payments (1:N) -->
+        <mxCell id="r4" value="1 : N (receives credits)&#xa;[FK: merchant_id]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#D97706;strokeWidth=2;startArrow=ERone;endArrow=ERmany;startSize=8;endSize=8;fontStyle=1;fontSize=9;fontColor=#B45309;" edge="1" parent="1" source="t_merch" target="t_pay">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="860" y="270" /><mxPoint x="690" y="370" /></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 5. wallets -> transactions (1:N) -->
+        <mxCell id="r5" value="1 : N (maintains history)&#xa;[FK: wallet_id]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#059669;strokeWidth=2;startArrow=ERone;endArrow=ERmany;startSize=8;endSize=8;fontStyle=1;fontSize=9;fontColor=#065F46;" edge="1" parent="1" source="t_wal" target="t_tx">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="460" y="240" /><mxPoint x="220" y="370" /></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 6. payments -> transactions (0..1:N) -->
+        <mxCell id="r6" value="0..1 : N (records payment tx)&#xa;[FK: payment_id]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=2;startArrow=ERzeroToOne;endArrow=ERmany;startSize=8;endSize=8;fontStyle=1;fontSize=9;fontColor=#5B21B6;" edge="1" parent="1" source="t_pay" target="t_tx">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="460" y="500" /><mxPoint x="360" y="500" /></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 7. payments -> refunds (1:0..1) -->
+        <mxCell id="r7" value="1 : 0..1 (reverses payment)&#xa;[FK: payment_id]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=2;startArrow=ERone;endArrow=ERzeroToOne;startSize=8;endSize=8;fontStyle=1;fontSize=9;fontColor=#991B1B;" edge="1" parent="1" source="t_pay" target="t_ref">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="740" y="500" /><mxPoint x="840" y="500" /></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 8. payments -> idempotency_records (1:1) -->
+        <mxCell id="r8" value="1 : 1 (idempotency key binding)&#xa;[FK: idempotency_key]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B45309;strokeWidth=2;startArrow=ERone;endArrow=ERone;startSize=8;endSize=8;fontStyle=1;fontSize=9;fontColor=#92400E;" edge="1" parent="1" source="t_pay" target="t_idem">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="740" y="440" /><mxPoint x="1220" y="200" /></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 9. wallets -> refunds (1:N) -->
+        <mxCell id="r9" value="1 : N (restores funds)&#xa;[FK: requester_wallet_id]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=2;startArrow=ERone;endArrow=ERmany;startSize=8;endSize=8;fontStyle=1;fontSize=9;fontColor=#991B1B;" edge="1" parent="1" source="t_wal" target="t_ref">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="740" y="220" /><mxPoint x="980" y="370" /></Array></mxGeometry>
+        </mxCell>
+
+        <!-- 10. payments -> audit_logs (1:N) -->
+        <mxCell id="r10" value="1 : N (immutable SIEM stream)&#xa;[FK: resource_id]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#475569;strokeWidth=2;dashed=1;startArrow=ERone;endArrow=ERmany;startSize=8;endSize=8;fontStyle=1;fontSize=9;fontColor=#334155;" edge="1" parent="1" source="t_pay" target="t_aud">
+          <mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="740" y="570" /><mxPoint x="1220" y="570" /></Array></mxGeometry>
+        </mxCell>
 
       </root>
     </mxGraphModel>

@@ -26,15 +26,23 @@ export default function AdminAuditView() {
 
   const auditActions = [
     { label: 'All Actions', value: '' },
-    { label: 'Registration', value: 'USER_REGISTERED' },
-    { label: 'Login Success', value: 'AUTH_LOGIN_SUCCESS' },
-    { label: 'Login Failure', value: 'AUTH_LOGIN_FAILED' },
+    { label: 'Login Success', value: 'LOGIN_SUCCESS' },
+    { label: 'Login Failure', value: 'LOGIN_FAILURE' },
+    { label: 'Authorization Failure', value: 'AUTHORIZATION_FAILURE' },
+    { label: 'Wallet Created', value: 'WALLET_CREATED' },
+    { label: 'Funds Added', value: 'FUNDS_ADDED' },
     { label: 'Payment Initiated', value: 'PAYMENT_INITIATED' },
     { label: 'Payment Confirmed', value: 'PAYMENT_CONFIRMED' },
     { label: 'Payment Refunded', value: 'PAYMENT_REFUNDED' },
-    { label: 'Replay Attempt', value: 'REPLAY_ATTACK_ATTEMPT' },
-    { label: 'Auth Failure', value: 'AUTHORIZATION_FAILURE' },
+    { label: 'Payment Failed', value: 'PAYMENT_FAILED' },
+    { label: 'Replay Detected', value: 'REPLAY_DETECTED' },
+    { label: 'Duplicate Payment', value: 'DUPLICATE_PAYMENT' },
+    { label: 'Suspicious Activity', value: 'SUSPICIOUS_ACTIVITY' },
   ];
+
+  const displayedLogs = selectedAction
+    ? logs.filter((l) => (l.eventType || l.action || '') === selectedAction)
+    : logs;
 
   return (
     <div>
@@ -58,7 +66,7 @@ export default function AdminAuditView() {
         <div className="card-header">
           <div>
             <h2 className="card-title">Security Event Audit Trail</h2>
-            <p className="card-subtitle">Showing {logs.length} logged administrative events</p>
+            <p className="card-subtitle">Showing {displayedLogs.length} logged administrative events</p>
           </div>
 
           <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
@@ -83,7 +91,7 @@ export default function AdminAuditView() {
 
         {loading ? (
           <p style={{ padding: '2rem', textAlign: 'center' }}>Loading security telemetry...</p>
-        ) : logs.length === 0 ? (
+        ) : displayedLogs.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-muted)' }}>
             <p>No audit records found matching the active filter.</p>
           </div>
@@ -94,21 +102,23 @@ export default function AdminAuditView() {
                 <tr>
                   <th>Log ID</th>
                   <th>Timestamp</th>
-                  <th>Action</th>
-                  <th>Result</th>
-                  <th>Actor ID</th>
-                  <th>Resource</th>
-                  <th>Correlation ID</th>
+                  <th>Event Type</th>
+                  <th>Outcome</th>
+                  <th>Actor</th>
+                  <th>Resource ID</th>
                   <th>IP Address</th>
-                  <th>Details</th>
+                  <th>Forensic Details</th>
                 </tr>
               </thead>
               <tbody>
-                {logs.map((log) => {
+                {displayedLogs.map((log) => {
+                  const evType = log.eventType || log.action || 'EVENT';
+                  const outcome = log.outcome || log.result || 'SUCCESS';
                   const isAdversarial =
-                    log.action.includes('REPLAY') ||
-                    log.action.includes('FAIL') ||
-                    log.result === 'FAILURE';
+                    evType.includes('REPLAY') ||
+                    evType.includes('FAIL') ||
+                    evType.includes('SUSPICIOUS') ||
+                    outcome === 'FAILURE';
 
                   return (
                     <tr
@@ -119,7 +129,7 @@ export default function AdminAuditView() {
                     >
                       <td className="code-pill">#{log.id}</td>
                       <td style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                        {new Date(log.timestamp).toLocaleString()}
+                        {new Date(log.createdAt || log.timestamp || Date.now()).toLocaleString()}
                       </td>
                       <td>
                         <span
@@ -127,27 +137,24 @@ export default function AdminAuditView() {
                             isAdversarial ? 'badge-FAILED' : 'badge-SUCCESS'
                           }`}
                         >
-                          {log.action}
+                          {evType}
                         </span>
                       </td>
                       <td>
                         <span
                           className={`badge ${
-                            log.result === 'SUCCESS' ? 'badge-CONFIRMED' : 'badge-FAILED'
+                            outcome === 'SUCCESS' ? 'badge-CONFIRMED' : 'badge-FAILED'
                           }`}
                         >
-                          {log.result}
+                          {outcome}
                         </span>
                       </td>
-                      <td>{log.userId ? `User #${log.userId}` : 'SYSTEM/ANON'}</td>
+                      <td style={{ fontWeight: 600 }}>{log.actorUsername || log.actor || 'SYSTEM'}</td>
                       <td>
-                        {log.resourceType ? `${log.resourceType} #${log.resourceId}` : 'N/A'}
-                      </td>
-                      <td className="code-pill" style={{ fontSize: '0.7rem' }}>
-                        {log.correlationId ? log.correlationId.substring(0, 8) + '...' : 'N/A'}
+                        {log.resourceId ? `#${log.resourceId}` : 'N/A'}
                       </td>
                       <td style={{ fontSize: '0.8rem' }}>{log.ipAddress || '127.0.0.1'}</td>
-                      <td style={{ fontSize: '0.75rem', maxWidth: 220, wordBreak: 'break-word' }}>
+                      <td style={{ fontSize: '0.75rem', maxWidth: 300, wordBreak: 'break-word' }}>
                         {log.details || '-'}
                       </td>
                     </tr>
