@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dwpg-mariadb
+  namespace: dwpg
+  labels:
+    app: dwpg-mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dwpg-mariadb
+  template:
+    metadata:
+      labels:
+        app: dwpg-mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: mariadb:11.4
+          ports:
+            - containerPort: 3306
+              name: mysql
+          env:
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: dwpg-config
+                  key: MARIADB_DATABASE
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dwpg-secrets
+                  key: MARIADB_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dwpg-secrets
+                  key: MARIADB_PASSWORD
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dwpg-secrets
+                  key: MARIADB_ROOT_PASSWORD
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+          volumeMounts:
+            - name: mariadb-storage
+              mountPath: /var/lib/mysql
+          readinessProbe:
+            exec:
+              command: ["mariadb-admin", "ping", "-h", "localhost"]
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command: ["mariadb-admin", "ping", "-h", "localhost"]
+            initialDelaySeconds: 30
+            periodSeconds: 15
+      volumes:
+        - name: mariadb-storage
+          persistentVolumeClaim:
+            claimName: mariadb-pvc

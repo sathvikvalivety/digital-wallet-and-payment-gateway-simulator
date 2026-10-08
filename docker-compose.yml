@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:11.4
+    container_name: dwpg-mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MARIADB_DATABASE:-dwpg_db}
+      MYSQL_USER: ${MARIADB_USER:-dwpg_user}
+      MYSQL_PASSWORD: ${MARIADB_PASSWORD:-SimulatedPass123!}
+      MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-SimulatedRoot123!}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - dwpg-network
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "${MARIADB_USER:-dwpg_user}", "-p${MARIADB_PASSWORD:-SimulatedPass123!}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dwpg-backend
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/${MARIADB_DATABASE:-dwpg_db}?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: ${MARIADB_USER:-dwpg_user}
+      SPRING_DATASOURCE_PASSWORD: ${MARIADB_PASSWORD:-SimulatedPass123!}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MariaDBDialect
+      JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
+      ADMIN_INITIAL_PASSWORD: ${ADMIN_INITIAL_PASSWORD:-Admin@Secure123!}
+    networks:
+      - dwpg-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: dwpg-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    networks:
+      - dwpg-network
+
+volumes:
+  mariadb_data:
+    driver: local
+
+networks:
+  dwpg-network:
+    driver: bridge

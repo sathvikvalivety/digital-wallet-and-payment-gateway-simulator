@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dwpg-backend
+  namespace: dwpg
+  labels:
+    app: dwpg-backend
+    tier: api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dwpg-backend
+  template:
+    metadata:
+      labels:
+        app: dwpg-backend
+        tier: api
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+      containers:
+        - name: backend
+          image: sathvikvalivety/dwpg-backend:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http-api
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: dwpg-config
+                  key: SPRING_DATASOURCE_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: dwpg-secrets
+                  key: MARIADB_USER
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dwpg-secrets
+                  key: MARIADB_PASSWORD
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              valueFrom:
+                configMapKeyRef:
+                  name: dwpg-config
+                  key: SPRING_JPA_HIBERNATE_DDL_AUTO
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: dwpg-secrets
+                  key: JWT_SECRET
+            - name: JWT_EXPIRATION_MS
+              valueFrom:
+                configMapKeyRef:
+                  name: dwpg-config
+                  key: JWT_EXPIRATION_MS
+            - name: ADMIN_INITIAL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dwpg-secrets
+                  key: ADMIN_INITIAL_PASSWORD
+          resources:
+            requests:
+              cpu: 300m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 25
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 15

@@ -1,0 +1,39 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: isolate-mariadb
+  namespace: dwpg
+spec:
+  podSelector:
+    matchLabels:
+      app: dwpg-mariadb
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: dwpg-backend
+      ports:
+        - protocol: TCP
+          port: 3306
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backend-network-policy
+  namespace: dwpg
+spec:
+  podSelector:
+    matchLabels:
+      app: dwpg-backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: dwpg-frontend
+      ports:
+        - protocol: TCP
+          port: 8080

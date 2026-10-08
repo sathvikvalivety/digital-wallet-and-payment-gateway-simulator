@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dwpg-config
+  namespace: dwpg
+data:
+  SPRING_DATASOURCE_URL: "jdbc:mariadb://dwpg-mariadb-service:3306/dwpg_db?createDatabaseIfNotExist=true"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+  SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: "org.hibernate.dialect.MariaDBDialect"
+  JWT_EXPIRATION_MS: "86400000"
+  MARIADB_DATABASE: "dwpg_db"
