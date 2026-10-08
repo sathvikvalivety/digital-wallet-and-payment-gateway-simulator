@@ -1,0 +1,29 @@
+Requirement ID,Category,Title,Description,Stakeholder,Priority,CIA Impact,Verification Method
+FR-001,Functional,User Registration,"The system shall allow new users to register with username, email, and strong password.",User,High,Integrity,Automated Integration Test
+FR-002,Functional,User Authentication,The system shall authenticate users using credentials and issue signed JWT bearer tokens.,User,High,Confidentiality,Security Unit Test
+FR-003,Functional,Wallet Creation,The system shall automatically provision a digital wallet with a zero balance upon user registration.,User,High,Integrity,Integration Test
+FR-004,Functional,Add Simulated Funds,The system shall allow users to add simulated funds to their personal wallet with balance bounds validation.,User,High,Integrity,Unit & API Test
+FR-005,Functional,Merchant Registration,The system shall allow registered users to create a verified merchant profile with business details and API credentials.,Merchant,Medium,Integrity,API Test
+FR-006,Functional,Payment Initiation,The system shall allow authenticated users to initiate simulated payments towards verified merchants.,User/Merchant,High,Integrity,E2E Test
+FR-007,Functional,Payment Confirmation,The system shall atomically debit the sender and credit the merchant upon payment confirmation.,System/Gateway,High,Integrity,Concurrency Stress Test
+FR-008,Functional,Refund Processing,The system shall allow authorized merchants to issue full or partial refunds on confirmed payments.,Merchant,High,Integrity,Integration Test
+FR-009,Functional,Transaction History,"The system shall provide users and merchants with chronological, paginated history of their respective transactions.",User/Merchant,Medium,Confidentiality,API Test
+FR-010,Functional,Wallet Balance Query,The system shall return the real-time verified balance of the authenticated user's wallet.,User,High,Integrity,API Test
+FR-011,Functional,Admin Audit Inspection,"The system shall allow authorized administrators to view, filter, and inspect immutable system audit logs.",Administrator,Medium,Integrity,RBAC Security Test
+FR-012,Functional,Security Alert Query,The system shall enable administrators to retrieve security alerts regarding replay attempts and double spending.,Administrator,Medium,Integrity,API Test
+NFR-001,Non-Functional,Transaction Latency,The payment gateway shall process atomic payment transactions within 500 milliseconds under normal load.,System/Gateway,High,Availability,Performance Test
+NFR-002,Non-Functional,System Availability,The simulator shall maintain 99.9% uptime during operational testing windows.,All Stakeholders,High,Availability,Health Check Monitoring
+NFR-003,Non-Functional,Data Consistency,The system persistence store shall adhere strictly to ACID properties with READ_COMMITTED isolation.,Database,High,Integrity,Rollback Automated Test
+NFR-004,Non-Functional,Scalability & Containerization,The backend and frontend services shall be containerized and deployable to Kubernetes with resource quotas.,DevOps,Medium,Availability,Kubernetes Validation
+NFR-005,Non-Functional,Maintainability & Code Quality,The codebase shall maintain 0 high/critical SonarQube issues and high test coverage on core payment paths.,Developer/QA,High,Integrity,SonarQube SAST
+NFR-006,Non-Functional,Audit Immutability,Audit log records shall be append-only and protected against retroactive alteration or deletion.,Security Subsystem,High,Integrity,Database Constraint Test
+SEC-001,Security,Password Protection,Passwords shall be hashed using BCrypt (factor 12) with unique cryptographic salts. Plaintext passwords shall never be persisted.,Security Subsystem,High,Confidentiality,Static Analysis & Unit Test
+SEC-002,Security,Stateless JWT Authentication,Session tokens shall be stateless HMAC-SHA256 signed JWTs with expiration time enforced server-side.,User/Merchant,High,Confidentiality,Token Expiry Test
+SEC-003,Security,Role-Based Access Control (RBAC),"Endpoints shall enforce strict roles (ROLE_USER, ROLE_MERCHANT, ROLE_ADMIN). Admin APIs shall reject non-admin tokens.",Security Subsystem,High,Confidentiality,RBAC Integration Test
+SEC-004,Security,Object-Level Authorization (BOLA/IDOR),"Users and merchants shall be strictly prohibited from accessing foreign wallets, payments, or transaction records.",User/Merchant,High,Confidentiality,IDOR Security Test
+SEC-005,Security,Double Spending Prevention,Concurrent payment requests attempting to overdraft a wallet shall be serialized using pessimistic database locks.,Database/Gateway,High,Integrity,Multi-Threaded Concurrency Test
+SEC-006,Security,Idempotency Enforcement,Payment endpoints shall require an Idempotency-Key. Repeated requests within 24 hours shall return identical cached responses.,System/Gateway,High,Integrity,Idempotency Test Suite
+SEC-007,Security,Replay Attack Protection,Requests reusing an idempotency key with modified payloads shall be rejected immediately as tampered replays.,Security Subsystem,High,Integrity,Replay Attack Test
+SEC-008,Security,Input Validation & Sanitization,"All API inputs (amounts, IDs, strings) shall be validated server-side. Negative or NaN amounts shall be rejected.",System/Gateway,High,Integrity,Fuzzing & Boundary Test
+SEC-009,Security,Immutable Audit Logging,"All security-critical actions (logins, debits, refunds, auth failures, replays) shall generate immutable audit records.",Security Subsystem,High,Integrity,Audit Trail Test
+SEC-010,Security,Sensitive Data Scrubbing,"Passwords, credit card numbers, and secret keys shall never be printed in application logs or audit stores.",Security Subsystem,High,Confidentiality,Log Scrubbing Inspection
